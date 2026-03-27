@@ -7,27 +7,26 @@
   <meta name="description" content="Private 1-on-1 coaching with Sam Elsner. Ecological dynamics applied directly to your specific plateau — sport, business, or coaching practice." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
     :root {
-      --bg: #09090b;
-      --surface: #111113;
-      --surface-2: #18181b;
-      --border: rgba(255,255,255,0.08);
-      --border-hover: rgba(255,255,255,0.16);
-      --text: #fafafa;
-      --text-2: rgba(250,250,250,0.60);
-      --text-3: rgba(250,250,250,0.35);
-      --crimson: #e11d48;
-      --crimson-b: #f43f5e;
-      --crimson-dim: rgba(225,29,72,0.10);
-      --crimson-glow: rgba(225,29,72,0.20);
+      --bg:           #09090b;
+      --surface:      #111113;
+      --surface-2:    #18181b;
+      --border:       rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.14);
+      --text:         #fafafa;
+      --text-2:       rgba(250,250,250,0.58);
+      --text-3:       rgba(250,250,250,0.32);
+      --crimson:      #e11d48;
+      --crimson-b:    #f43f5e;
+      --crimson-glow: rgba(225,29,72,0.18);
 
       --font-display: 'Cormorant Garamond', Georgia, serif;
-      --font-body: 'Inter', system-ui, sans-serif;
+      --font-body:    'Inter', system-ui, sans-serif;
     }
 
     html { background: var(--bg); }
@@ -36,176 +35,219 @@
       background: transparent;
       color: var(--text);
       font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.75;
+      font-size: 15px;
+      line-height: 1.8;
       font-weight: 300;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      padding: 48px 24px 120px;
     }
 
-    /* ── Scroll Progress ── */
+    /* ── Infrastructure ────────────────────────────────────────── */
     #scroll-progress {
-      position: fixed;
-      top: 0; left: 0;
-      height: 3px; width: 0%;
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
       background: var(--crimson);
       z-index: 9999;
       transition: width 0.1s linear;
     }
 
-    /* ── Terrain Canvas ── */
     #terrain-canvas {
-      position: fixed;
-      top: 0; left: 0;
+      position: fixed; top: 0; left: 0;
       width: 100%; height: 100%;
-      z-index: 0;
-      pointer-events: none;
+      z-index: 0; pointer-events: none;
     }
 
-    /* ── Ambient Orb ── */
     #ambient-orb {
       position: fixed;
-      width: 600px; height: 600px;
+      width: 500px; height: 500px;
       border-radius: 50%;
       background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 1;
+      pointer-events: none; z-index: 1;
       transform: translate(-50%, -50%);
-      transition: left 0.6s ease, top 0.6s ease;
-      opacity: 0.5;
+      transition: left 0.8s ease, top 0.8s ease;
+      opacity: 0.45;
     }
 
-    /* ── Vignette ── */
     .vignette {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(ellipse at center, transparent 40%, rgba(9,9,11,0.72) 100%);
-      pointer-events: none;
-      z-index: 1;
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 35%, rgba(9,9,11,0.78) 100%);
+      pointer-events: none; z-index: 1;
     }
 
-    /* ── Page ── */
+    /* ── Layout ─────────────────────────────────────────────────── */
     .page {
-      max-width: 640px;
+      max-width: 620px;
       margin: 0 auto;
-      position: relative;
-      z-index: 2;
+      padding: 52px 28px 140px;
+      position: relative; z-index: 2;
     }
 
-    /* ── Nav ── */
-    .nav { margin-bottom: 64px; }
+    /* ── Nav ─────────────────────────────────────────────────────── */
+    .nav {
+      margin-bottom: 80px;
+    }
     .nav a {
-      font-size: 13px;
-      letter-spacing: 0.06em;
-      color: var(--text-2);
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
       text-decoration: none;
-      transition: color 0.15s;
+      transition: color 0.2s;
     }
-    .nav a:hover { color: var(--text); }
+    .nav a:hover { color: var(--text-2); }
 
-    /* ── Headings ── */
+    /* ── Hero ────────────────────────────────────────────────────── */
+    .hero { margin-bottom: 96px; }
+
     h1 {
       font-family: var(--font-display);
       font-style: italic;
-      font-size: clamp(36px, 6vw, 52px);
-      font-weight: 400;
-      line-height: 1.15;
+      font-size: clamp(52px, 9vw, 80px);
+      font-weight: 300;
+      line-height: 1.08;
       letter-spacing: -0.01em;
       color: var(--text);
-      margin-bottom: 56px;
+      margin-bottom: 24px;
     }
 
-    h2 {
+    .hero-sub {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(17px, 2.2vw, 20px);
+      font-weight: 300;
+      color: var(--text-2);
+      line-height: 1.5;
+      max-width: 480px;
+    }
+
+    /* ── Section labels ──────────────────────────────────────────── */
+    .label {
+      display: block;
       font-family: var(--font-body);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 500;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--crimson);
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
 
-    /* ── Body ── */
-    p { color: var(--text-2); margin-bottom: 16px; font-size: 15px; }
+    /* ── Body copy ───────────────────────────────────────────────── */
+    .section { margin-bottom: 88px; }
+
+    p {
+      color: var(--text-2);
+      margin-bottom: 18px;
+      font-size: 15px;
+      line-height: 1.8;
+    }
     p:last-child { margin-bottom: 0; }
 
-    /* ── Sections ── */
-    .section { margin-bottom: 72px; }
-
-    /* ── Divider ── */
+    /* ── Divider ─────────────────────────────────────────────────── */
     .divider {
       border: none;
       border-top: 1px solid var(--border);
-      margin: 72px 0;
+      margin: 88px 0;
     }
 
-    /* ── Lists ── */
-    ul { padding-left: 20px; margin-bottom: 16px; }
-    ul li { margin-bottom: 8px; font-size: 15px; color: var(--text-2); }
+    /* ── Lists ───────────────────────────────────────────────────── */
+    ul { padding-left: 18px; margin-bottom: 18px; }
+    ul li {
+      margin-bottom: 10px;
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
 
-    /* ── Packages ── */
-    .packages { display: flex; flex-direction: column; gap: 1px; }
+    /* ── Scroll reveal ───────────────────────────────────────────── */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    [data-reveal].visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Packages ────────────────────────────────────────────────── */
+    .packages { display: flex; flex-direction: column; gap: 2px; }
 
     .package {
       background: var(--surface);
       border: 1px solid var(--border);
-      padding: 32px;
-      transition: border-color 0.2s;
+      padding: 36px 32px;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      cursor: default;
     }
-    .package:hover { border-color: var(--border-hover); }
+    .package:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
 
-    .package-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 16px;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
     .package-name {
       font-family: var(--font-display);
       font-style: italic;
-      font-size: 22px;
-      font-weight: 400;
+      font-size: 26px;
+      font-weight: 300;
       color: var(--text);
+      display: block;
+      margin-bottom: 6px;
     }
     .package-price {
-      font-size: 15px;
+      font-family: var(--font-body);
+      font-size: 12px;
       font-weight: 400;
+      letter-spacing: 0.12em;
       color: var(--text-3);
-      white-space: nowrap;
-      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 24px;
     }
-    .package p { color: var(--text-2); font-size: 15px; margin-bottom: 16px; }
-    .package ul { margin-bottom: 24px; }
 
-    /* ── Button ── */
+    .package p {
+      color: var(--text-2);
+      font-size: 14px;
+      line-height: 1.75;
+      margin-bottom: 18px;
+    }
+    .package ul {
+      margin-bottom: 28px;
+    }
+    .package ul li {
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    /* ── CTA Button ──────────────────────────────────────────────── */
     .btn {
       display: inline-block;
-      padding: 11px 24px;
+      padding: 12px 28px;
       font-family: var(--font-body);
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 500;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
       text-decoration: none;
       background: var(--crimson);
       color: #fff;
       border: 1px solid var(--crimson);
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s;
+      transition: background 0.18s, border-color 0.18s, transform 0.18s;
     }
     .btn:hover {
       background: var(--crimson-b);
       border-color: var(--crimson-b);
+      transform: translateY(-1px);
     }
 
-    /* ── Footer ── */
+    /* ── Footer ──────────────────────────────────────────────────── */
     .footer {
-      margin-top: 96px;
-      padding-top: 32px;
+      margin-top: 112px;
+      padding-top: 36px;
       border-top: 1px solid var(--border);
-      font-size: 13px;
+      font-size: 12px;
+      letter-spacing: 0.04em;
       color: var(--text-3);
     }
     .footer a { color: var(--text-3); text-decoration: none; }
@@ -225,68 +267,68 @@
       <a href="/">&#8592; Back</a>
     </nav>
 
-    <h1>1:1 Coaching</h1>
+    <!-- Hero -->
+    <div class="hero">
+      <h1>1:1 Coaching</h1>
+      <p class="hero-sub">One conversation to map exactly what&#8217;s producing your plateau &#8212; and what has to change.</p>
+    </div>
 
-    <div class="section">
-      <h2>What is this?</h2>
+    <!-- What is this -->
+    <div class="section" data-reveal>
+      <span class="label">What is this</span>
       <p>This is my only private coaching container available.</p>
       <p>I work with coaches, athletes, creators, and entrepreneurs who are having some success &#8212; but something is still off. They aren&#8217;t breaking through to the new heights they want to, and they don&#8217;t feel entirely fulfilled in their work or performance.</p>
       <p>They are tired of cycles of unfulfilled potential and want to permanently enter the reality where they are operating at their fullest capacity.</p>
       <p>My coaching draws from ecological dynamics, skill acquisition science, and perception-action theory &#8212; applied directly to your domain and your specific constraints.</p>
-      <p>The work is diagnostic, not prescriptive.</p>
-      <p>I believe there are no cookie-cutter solutions to performance plateaus. Each problem is unique, and each requires a precise environmental redesign to transcend.</p>
-      <p>I function as a performance coach and diagnostic mirror in your pocket &#8212; noticing blindspots, challenging assumptions, and helping you redesign the conditions producing your current results.</p>
+      <p>The work is diagnostic, not prescriptive. I believe there are no cookie-cutter solutions to performance plateaus. Each problem is unique, and each requires a precise environmental redesign to transcend.</p>
     </div>
 
     <hr class="divider" />
 
-    <div class="section">
-      <h2>How it works</h2>
+    <!-- How it works -->
+    <div class="section" data-reveal>
+      <span class="label">How it works</span>
       <p>We begin with a 75-minute Environmental Audit to clarify your goals, map your current constraints, and diagnose exactly what is producing your plateau.</p>
-      <p>From there, we check in via voice note or text every day. It is expected that you send a fully transparent 3&#8211;5 minute check-in each day.</p>
-      <p>This serves as an ongoing diagnostic loop and allows us to iterate and realign faster than any once-a-week program. The constraint gets adjusted in real time &#8212; not a week later when the moment has passed.</p>
+      <p>From there, we check in via voice note or text every day. A fully transparent 3&#8211;5 minute check-in from you each day. This is the constraint.</p>
+      <p>It serves as an ongoing diagnostic loop &#8212; allowing us to iterate and realign faster than any once-a-week program. The constraint gets adjusted in real time, not a week later when the moment has passed.</p>
       <p>Throughout our time together, I will also send you relevant frameworks and constraint designs specific to your domain to accelerate your progress.</p>
       <p>You will receive access to the full Foundations course and workbook for the duration of your engagement.</p>
     </div>
 
     <hr class="divider" />
 
-    <div class="section">
-      <h2>Who this is for</h2>
-      <p>I typically work with coaches, athletes, and creators.</p>
-      <p>These are people who are having some success, but something is still off. They aren&#8217;t breaking through to the new heights they want to. They have read the books, done the programs, tried everything they&#8217;ve been told to try &#8212; and still can&#8217;t bridge the gap between what they know and what they&#8217;re producing.</p>
-      <p>They are tired of cycles of unfulfilled potential and want to permanently operate at their fullest capacity.</p>
+    <!-- Who this is for -->
+    <div class="section" data-reveal>
+      <span class="label">Who this is for</span>
+      <p>Coaches, athletes, and creators who are having some success &#8212; but something is still off. They aren&#8217;t breaking through to the new heights they want to. They have read the books, done the programs, tried everything they&#8217;ve been told to try &#8212; and still can&#8217;t bridge the gap between what they know and what they&#8217;re producing.</p>
       <p>If you need someone to prescribe a protocol and tell you exactly what to do each week, this is not the right fit. If you are ready to diagnose the specific environment producing your current results and change it &#8212; this is exactly this.</p>
     </div>
 
     <hr class="divider" />
 
-    <div class="section">
-      <h2>1:1 Coaching Packages</h2>
+    <!-- Packages -->
+    <div class="section" data-reveal>
+      <span class="label">Packages</span>
       <div class="packages">
 
         <div class="package">
-          <div class="package-header">
-            <span class="package-name">Activation</span>
-            <span class="package-price">$500</span>
-          </div>
+          <span class="package-name">Activation</span>
+          <span class="package-price">$500 &middot; Single Session</span>
           <p>One 75-minute Environmental Audit. A full diagnostic of the constraints producing your current plateau. You leave knowing precisely what&#8217;s creating the gap and what to change. No commitment beyond the session.</p>
-          <a href="https://t.me/samelsner" class="btn">Inquire via Telegram</a>
+          <a href="https://t.me/samelsner" class="btn">Begin the Conversation</a>
         </div>
 
         <div class="package">
-          <div class="package-header">
-            <span class="package-name">Accelerator</span>
-            <span class="package-price">$888/month</span>
-          </div>
-          <p>Ongoing engagement with daily support and real-time constraint redesign.</p>
+          <span class="package-name">Accelerator</span>
+          <span class="package-price">$888 / month &middot; Ongoing</span>
+          <p>Daily support and real-time constraint redesign. This is what permanent change looks like.</p>
           <ul>
             <li>Monthly 75-minute 1-on-1 session</li>
             <li>Daily voice note &amp; text check-ins</li>
             <li>Direct Telegram access</li>
             <li>Full Foundations course access included</li>
           </ul>
-          <a href="https://t.me/samelsner" class="btn">Inquire via Telegram</a>
+          <a href="https://t.me/samelsner" class="btn">Begin the Conversation</a>
         </div>
 
       </div>
@@ -333,107 +375,61 @@
     function drawTerrain() {
       if (!W || !H) return;
       ctx.clearRect(0, 0, W, H);
-
-      const cellW = W / GW;
-      const cellH = H / GH;
-
+      const cellW = W / GW, cellH = H / GH;
       const field = [];
       for (let y = 0; y <= GH; y++) {
         field[y] = [];
-        for (let x = 0; x <= GW; x++) {
-          field[y][x] = getHeight(x / GW, y / GH, animT);
-        }
+        for (let x = 0; x <= GW; x++) field[y][x] = getHeight(x / GW, y / GH, animT);
       }
-
       // Grid mesh
       ctx.save();
-      ctx.strokeStyle = 'rgba(255,255,255,0.055)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
       ctx.lineWidth = 0.5;
       ctx.beginPath();
-      for (let x = 0; x <= GW; x++) {
-        ctx.moveTo(x * cellW, 0);
-        ctx.lineTo(x * cellW, H);
-      }
-      for (let y = 0; y <= GH; y++) {
-        ctx.moveTo(0, y * cellH);
-        ctx.lineTo(W, y * cellH);
-      }
-      ctx.stroke();
-      ctx.restore();
-
-      // Contour lines
-      const NUM_LEVELS = 52;
-      const MIN_VAL = -0.9, MAX_VAL = 0.9;
-
+      for (let x = 0; x <= GW; x++) { ctx.moveTo(x * cellW, 0); ctx.lineTo(x * cellW, H); }
+      for (let y = 0; y <= GH; y++) { ctx.moveTo(0, y * cellH); ctx.lineTo(W, y * cellH); }
+      ctx.stroke(); ctx.restore();
+      // Contours
+      const NUM_LEVELS = 52, MIN_VAL = -0.9, MAX_VAL = 0.9;
       for (let lv = 0; lv < NUM_LEVELS; lv++) {
         const threshold = MIN_VAL + (lv / NUM_LEVELS) * (MAX_VAL - MIN_VAL);
-        const isRidge = lv % 6 === 0;
-        const isMajor = lv % 3 === 0;
-        const alpha = isRidge ? 0.52 : isMajor ? 0.20 : 0.07;
-        const lineW = isRidge ? 1.2 : isMajor ? 0.7 : 0.4;
-
+        const isRidge = lv % 6 === 0, isMajor = lv % 3 === 0;
+        const alpha = isRidge ? 0.48 : isMajor ? 0.17 : 0.06;
+        const lineW = isRidge ? 1.1 : isMajor ? 0.65 : 0.35;
         ctx.beginPath();
         ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
         ctx.lineWidth = lineW;
-
         for (let y = 0; y < GH; y++) {
           for (let x = 0; x < GW; x++) {
-            const v00 = field[y][x],   v10 = field[y][x+1];
+            const v00 = field[y][x], v10 = field[y][x+1];
             const v01 = field[y+1][x], v11 = field[y+1][x+1];
-
-            const ci =
-              (v00 > threshold ? 8 : 0) |
-              (v10 > threshold ? 4 : 0) |
-              (v11 > threshold ? 2 : 0) |
-              (v01 > threshold ? 1 : 0);
-
+            const ci = (v00 > threshold ? 8 : 0) | (v10 > threshold ? 4 : 0) |
+                       (v11 > threshold ? 2 : 0) | (v01 > threshold ? 1 : 0);
             if (ci === 0 || ci === 15) continue;
-
             const x0 = x * cellW, x1 = (x+1) * cellW;
             const y0 = y * cellH, y1 = (y+1) * cellH;
-
             const top    = { x: x0 + edgeLerp(v00, v10, threshold) * cellW, y: y0 };
             const bottom = { x: x0 + edgeLerp(v01, v11, threshold) * cellW, y: y1 };
             const left   = { x: x0, y: y0 + edgeLerp(v00, v01, threshold) * cellH };
             const right  = { x: x1, y: y0 + edgeLerp(v10, v11, threshold) * cellH };
-
-            const centre = (v00 + v10 + v01 + v11) / 4;
-            const above  = centre > threshold;
-
+            const above  = (v00 + v10 + v01 + v11) / 4 > threshold;
             const segs = {
-              1:  [[left, bottom]],
-              2:  [[bottom, right]],
-              3:  [[left, right]],
-              4:  [[top, right]],
-              5:  above ? [[top, right], [left, bottom]] : [[top, left], [right, bottom]],
-              6:  [[top, bottom]],
-              7:  [[top, left]],
-              8:  [[top, left]],
-              9:  [[top, bottom]],
-              10: above ? [[top, right], [left, bottom]] : [[top, left], [right, bottom]],
-              11: [[top, right]],
-              12: [[left, right]],
-              13: [[bottom, right]],
-              14: [[left, bottom]],
+              1:[[left,bottom]],2:[[bottom,right]],3:[[left,right]],4:[[top,right]],
+              5:above?[[top,right],[left,bottom]]:[[top,left],[right,bottom]],
+              6:[[top,bottom]],7:[[top,left]],8:[[top,left]],9:[[top,bottom]],
+              10:above?[[top,right],[left,bottom]]:[[top,left],[right,bottom]],
+              11:[[top,right]],12:[[left,right]],13:[[bottom,right]],14:[[left,bottom]],
             }[ci];
-
-            if (segs) {
-              segs.forEach(([a, b]) => {
-                ctx.moveTo(a.x, a.y);
-                ctx.lineTo(b.x, b.y);
-              });
-            }
+            if (segs) segs.forEach(([a, b]) => { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); });
           }
         }
         ctx.stroke();
       }
-
       animT += 0.005;
     }
 
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-
     (function terrainLoop() {
       drawTerrain();
       setTimeout(() => requestAnimationFrame(terrainLoop), 1000 / 30);
@@ -441,22 +437,25 @@
 
     /* ── Scroll Progress ── */
     const progressBar = document.getElementById('scroll-progress');
-    function updateProgress() {
+    window.addEventListener('scroll', () => {
       const total = document.documentElement.scrollHeight - window.innerHeight;
       progressBar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
-    }
+    }, { passive: true });
 
     /* ── Ambient Orb ── */
     const orb = document.getElementById('ambient-orb');
-    function updateOrb(e) {
+    orb.style.left = '50%'; orb.style.top = '40%';
+    window.addEventListener('mousemove', e => {
       orb.style.left = e.clientX + 'px';
       orb.style.top  = e.clientY + 'px';
-    }
-    orb.style.left = '50%';
-    orb.style.top  = '40%';
+    }, { passive: true });
 
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    window.addEventListener('mousemove', updateOrb, { passive: true });
+    /* ── Scroll Reveal ── */
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
 
   })();
   </script>
