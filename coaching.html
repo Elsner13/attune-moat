@@ -63,16 +63,7 @@
       z-index: 0; pointer-events: none;
     }
 
-    #ambient-orb {
-      position: fixed;
-      width: 500px; height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
-      pointer-events: none; z-index: 1;
-      transform: translate(-50%, -50%);
-      transition: left 0.8s ease, top 0.8s ease;
-      opacity: 0.45;
-    }
+    #ambient-orb { display: none; }
 
     .vignette {
       position: fixed; inset: 0;
@@ -475,13 +466,6 @@
       progressBar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
     }, { passive: true });
 
-    /* ── Ambient Orb ── */
-    const orb = document.getElementById('ambient-orb');
-    orb.style.left = '50%'; orb.style.top = '40%';
-    window.addEventListener('mousemove', e => {
-      orb.style.left = e.clientX + 'px';
-      orb.style.top  = e.clientY + 'px';
-    }, { passive: true });
 
     /* ── Scroll Reveal ── */
     const revealEls = document.querySelectorAll('[data-reveal]');
