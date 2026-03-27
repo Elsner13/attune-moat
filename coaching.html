@@ -7,89 +7,218 @@
   <meta name="description" content="Private 1-on-1 coaching with Sam Elsner. Ecological dynamics applied directly to your specific plateau — sport, business, or coaching practice." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
 
     :root {
-      --bg: #ffffff;
-      --text: #0a0a0a;
-      --text-muted: #6b6b6b;
-      --border: #e5e5e5;
+      --bg: #09090b;
+      --surface: #111113;
+      --surface-2: #18181b;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.16);
+      --text: #fafafa;
+      --text-2: rgba(250,250,250,0.60);
+      --text-3: rgba(250,250,250,0.35);
+      --crimson: #e11d48;
+      --crimson-b: #f43f5e;
+      --crimson-dim: rgba(225,29,72,0.10);
+      --crimson-glow: rgba(225,29,72,0.20);
+
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0a0a0a;
-        --text: #f5f5f5;
-        --text-muted: #8a8a8a;
-        --border: #222222;
-      }
-    }
+    html { background: var(--bg); }
 
-    html {
-      background: var(--bg);
+    body {
+      background: transparent;
       color: var(--text);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: var(--font-body);
       font-size: 16px;
       line-height: 1.75;
       font-weight: 300;
+      overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      padding: 48px 24px 120px;
     }
 
-    body { padding: 48px 24px 120px; }
+    /* ── Scroll Progress ── */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: var(--crimson);
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
 
-    .page { max-width: 640px; margin: 0 auto; }
+    /* ── Terrain Canvas ── */
+    #terrain-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-    /* Nav */
+    /* ── Ambient Orb ── */
+    #ambient-orb {
+      position: fixed;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+      transition: left 0.6s ease, top 0.6s ease;
+      opacity: 0.5;
+    }
+
+    /* ── Vignette ── */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(9,9,11,0.72) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Page ── */
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── Nav ── */
     .nav { margin-bottom: 64px; }
-    .nav a { font-size: 14px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .nav a {
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--text-2);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
     .nav a:hover { color: var(--text); }
 
-    /* Headings */
-    h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 500; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 48px; }
-    h2 { font-size: 13px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+    /* ── Headings ── */
+    h1 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(36px, 6vw, 52px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 56px;
+    }
 
-    /* Body */
-    p { color: var(--text); margin-bottom: 16px; font-size: 16px; }
+    h2 {
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 20px;
+    }
+
+    /* ── Body ── */
+    p { color: var(--text-2); margin-bottom: 16px; font-size: 15px; }
     p:last-child { margin-bottom: 0; }
 
-    /* Sections */
+    /* ── Sections ── */
     .section { margin-bottom: 72px; }
 
-    /* Divider */
-    .divider { border: none; border-top: 1px solid var(--border); margin: 72px 0; }
-
-    /* Lists */
-    ul { padding-left: 20px; margin-bottom: 16px; }
-    ul li { margin-bottom: 8px; font-size: 16px; color: var(--text); }
-
-    /* Packages */
-    .packages { display: flex; flex-direction: column; gap: 40px; }
-    .package { border-top: 1px solid var(--border); padding-top: 32px; }
-    .package-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; gap: 16px; flex-wrap: wrap; }
-    .package-name { font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
-    .package-price { font-size: 18px; font-weight: 400; color: var(--text-muted); white-space: nowrap; }
-    .package p { color: var(--text-muted); font-size: 15px; margin-bottom: 16px; }
-    .package ul { margin-bottom: 24px; }
-    .package ul li { color: var(--text-muted); font-size: 15px; }
-
-    /* Button */
-    .btn {
-      display: inline-block; padding: 12px 24px; font-family: inherit; font-size: 14px;
-      font-weight: 400; text-decoration: none; border: 1px solid var(--text);
-      color: var(--text); background: transparent; cursor: pointer;
-      transition: background 0.15s, color 0.15s; letter-spacing: 0.01em;
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 72px 0;
     }
-    .btn:hover { background: var(--text); color: var(--bg); }
 
-    /* Footer */
-    .footer { margin-top: 96px; padding-top: 32px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted); }
-    .footer a { color: var(--text-muted); text-decoration: none; }
-    .footer a:hover { color: var(--text); }
+    /* ── Lists ── */
+    ul { padding-left: 20px; margin-bottom: 16px; }
+    ul li { margin-bottom: 8px; font-size: 15px; color: var(--text-2); }
+
+    /* ── Packages ── */
+    .packages { display: flex; flex-direction: column; gap: 1px; }
+
+    .package {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      transition: border-color 0.2s;
+    }
+    .package:hover { border-color: var(--border-hover); }
+
+    .package-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .package-name {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+    }
+    .package-price {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text-3);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+    .package p { color: var(--text-2); font-size: 15px; margin-bottom: 16px; }
+    .package ul { margin-bottom: 24px; }
+
+    /* ── Button ── */
+    .btn {
+      display: inline-block;
+      padding: 11px 24px;
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      background: var(--crimson);
+      color: #fff;
+      border: 1px solid var(--crimson);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn:hover {
+      background: var(--crimson-b);
+      border-color: var(--crimson-b);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 96px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-3);
+    }
+    .footer a { color: var(--text-3); text-decoration: none; }
+    .footer a:hover { color: var(--text-2); }
   </style>
 </head>
 <body>
+
+  <div id="scroll-progress" role="progressbar" aria-hidden="true"></div>
+  <div id="ambient-orb" aria-hidden="true"></div>
+  <canvas id="terrain-canvas" aria-hidden="true"></canvas>
+  <div class="vignette" aria-hidden="true"></div>
+
   <div class="page">
 
     <nav class="nav">
@@ -168,5 +297,168 @@
     </footer>
 
   </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    /* ── Terrain Canvas ── */
+    const canvas = document.getElementById('terrain-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    const GW = 160, GH = 110;
+    let animT = 0;
+
+    function resizeCanvas() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function getHeight(nx, ny, t) {
+      return (
+        Math.sin(nx * 3.4 + t * 0.22) * 0.28 +
+        Math.sin(ny * 2.9 - t * 0.17) * 0.24 +
+        Math.sin((nx + ny) * 4.8 + t * 0.11) * 0.20 +
+        Math.sin(nx * 7.2 + ny * 5.1 - t * 0.08) * 0.14 +
+        Math.sin(nx * 1.8 - ny * 6.3 + t * 0.19) * 0.09 +
+        Math.sin(nx * 11 + ny * 4 + t * 0.05) * 0.05
+      );
+    }
+
+    function edgeLerp(a, b, threshold) {
+      const d = b - a;
+      return Math.abs(d) < 0.0001 ? 0.5 : Math.max(0, Math.min(1, (threshold - a) / d));
+    }
+
+    function drawTerrain() {
+      if (!W || !H) return;
+      ctx.clearRect(0, 0, W, H);
+
+      const cellW = W / GW;
+      const cellH = H / GH;
+
+      const field = [];
+      for (let y = 0; y <= GH; y++) {
+        field[y] = [];
+        for (let x = 0; x <= GW; x++) {
+          field[y][x] = getHeight(x / GW, y / GH, animT);
+        }
+      }
+
+      // Grid mesh
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,0.055)';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      for (let x = 0; x <= GW; x++) {
+        ctx.moveTo(x * cellW, 0);
+        ctx.lineTo(x * cellW, H);
+      }
+      for (let y = 0; y <= GH; y++) {
+        ctx.moveTo(0, y * cellH);
+        ctx.lineTo(W, y * cellH);
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Contour lines
+      const NUM_LEVELS = 52;
+      const MIN_VAL = -0.9, MAX_VAL = 0.9;
+
+      for (let lv = 0; lv < NUM_LEVELS; lv++) {
+        const threshold = MIN_VAL + (lv / NUM_LEVELS) * (MAX_VAL - MIN_VAL);
+        const isRidge = lv % 6 === 0;
+        const isMajor = lv % 3 === 0;
+        const alpha = isRidge ? 0.52 : isMajor ? 0.20 : 0.07;
+        const lineW = isRidge ? 1.2 : isMajor ? 0.7 : 0.4;
+
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+        ctx.lineWidth = lineW;
+
+        for (let y = 0; y < GH; y++) {
+          for (let x = 0; x < GW; x++) {
+            const v00 = field[y][x],   v10 = field[y][x+1];
+            const v01 = field[y+1][x], v11 = field[y+1][x+1];
+
+            const ci =
+              (v00 > threshold ? 8 : 0) |
+              (v10 > threshold ? 4 : 0) |
+              (v11 > threshold ? 2 : 0) |
+              (v01 > threshold ? 1 : 0);
+
+            if (ci === 0 || ci === 15) continue;
+
+            const x0 = x * cellW, x1 = (x+1) * cellW;
+            const y0 = y * cellH, y1 = (y+1) * cellH;
+
+            const top    = { x: x0 + edgeLerp(v00, v10, threshold) * cellW, y: y0 };
+            const bottom = { x: x0 + edgeLerp(v01, v11, threshold) * cellW, y: y1 };
+            const left   = { x: x0, y: y0 + edgeLerp(v00, v01, threshold) * cellH };
+            const right  = { x: x1, y: y0 + edgeLerp(v10, v11, threshold) * cellH };
+
+            const centre = (v00 + v10 + v01 + v11) / 4;
+            const above  = centre > threshold;
+
+            const segs = {
+              1:  [[left, bottom]],
+              2:  [[bottom, right]],
+              3:  [[left, right]],
+              4:  [[top, right]],
+              5:  above ? [[top, right], [left, bottom]] : [[top, left], [right, bottom]],
+              6:  [[top, bottom]],
+              7:  [[top, left]],
+              8:  [[top, left]],
+              9:  [[top, bottom]],
+              10: above ? [[top, right], [left, bottom]] : [[top, left], [right, bottom]],
+              11: [[top, right]],
+              12: [[left, right]],
+              13: [[bottom, right]],
+              14: [[left, bottom]],
+            }[ci];
+
+            if (segs) {
+              segs.forEach(([a, b]) => {
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+              });
+            }
+          }
+        }
+        ctx.stroke();
+      }
+
+      animT += 0.005;
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    (function terrainLoop() {
+      drawTerrain();
+      setTimeout(() => requestAnimationFrame(terrainLoop), 1000 / 30);
+    })();
+
+    /* ── Scroll Progress ── */
+    const progressBar = document.getElementById('scroll-progress');
+    function updateProgress() {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
+    }
+
+    /* ── Ambient Orb ── */
+    const orb = document.getElementById('ambient-orb');
+    function updateOrb(e) {
+      orb.style.left = e.clientX + 'px';
+      orb.style.top  = e.clientY + 'px';
+    }
+    orb.style.left = '50%';
+    orb.style.top  = '40%';
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('mousemove', updateOrb, { passive: true });
+
+  })();
+  </script>
 </body>
 </html>
