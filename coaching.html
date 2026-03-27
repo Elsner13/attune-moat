@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1-on-1 Coaching — Attune | Work Directly With Sam</title>
+  <meta name="description" content="You've read the books. Done the programs. You know more than enough. The problem isn't your knowledge — it's the environment you're applying it in. Apply to work with Sam." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --bg: #09090b;
+      --surface: #111113;
+      --surface-2: #18181b;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.14);
+      --text: #fafafa;
+      --text-2: rgba(250,250,250,0.60);
+      --text-3: rgba(250,250,250,0.35);
+      --crimson: #e11d48;
+      --crimson-b: #f43f5e;
+      --crimson-dim: rgba(225,29,72,0.10);
+      --crimson-glow: rgba(225,29,72,0.20);
+
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-5: 40px;
+      --space-6: 48px;
+      --space-8: 64px;
+      --space-10: 80px;
+      --space-12: 96px;
+      --space-16: 128px;
+
+      --section-py: clamp(96px, 10vw, 160px);
+      --max-w: 1100px;
+    }
+
+    html { background: var(--bg); }
+
+    body {
+      background: transparent;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.75;
+      font-weight: 300;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Scroll Progress ───────────────────────────────────────────── */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: var(--crimson); z-index: 9999; transition: width 0.1s linear;
+    }
+
+    /* ─── Terrain Canvas ────────────────────────────────────────────── */
+    #terrain-canvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* ─── Ambient Orb ───────────────────────────────────────────────── */
+    #ambient-orb {
+      position: fixed; width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
+      pointer-events: none; z-index: 1; transform: translate(-50%, -50%);
+      transition: left 0.6s ease, top 0.6s ease; opacity: 0.5;
+    }
+
+    /* ─── Vignette ──────────────────────────────────────────────────── */
+    #vignette {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(9,9,11,0.70) 80%, rgba(9,9,11,0.92) 100%);
+    }
+
+    /* ─── Layout ────────────────────────────────────────────────────── */
+    .container {
+      max-width: var(--max-w); margin: 0 auto;
+      padding: 0 var(--space-4); position: relative; z-index: 2;
+    }
+
+    .section-label {
+      font-family: var(--font-body); font-weight: 500; font-size: 11px;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--crimson);
+      margin-bottom: var(--space-3); display: block;
+    }
+
+    /* ─── Reveal ─────────────────────────────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ─── Navigation ────────────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 var(--space-4); height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(9,9,11,0); backdrop-filter: blur(0px);
+      border-bottom: 1px solid transparent;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease;
+    }
+    .nav.scrolled {
+      background: rgba(9,9,11,0.95); backdrop-filter: blur(16px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-body); font-weight: 500; font-size: 18px;
+      letter-spacing: -0.02em; color: var(--text); text-decoration: none;
+    }
+    .nav-logo span { color: var(--crimson); }
+    .nav-links { display: flex; align-items: center; gap: var(--space-5); list-style: none; }
+    .nav-links a {
+      font-size: 13px; font-weight: 400; color: var(--text-2);
+      text-decoration: none; transition: color 0.2s; letter-spacing: 0.01em;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--crimson); color: var(--text) !important;
+      padding: 8px 20px; font-weight: 500 !important; font-size: 13px !important;
+      transition: background 0.2s !important; border-radius: 2px;
+    }
+    .nav-cta:hover { background: var(--crimson-b) !important; }
+
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px; cursor: pointer;
+      padding: 4px; background: none; border: none;
+    }
+    .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--text); transition: transform 0.3s, opacity 0.3s; }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav-mobile {
+      display: none; position: fixed; top: 64px; left: 0; right: 0;
+      background: rgba(9,9,11,0.98); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border); padding: var(--space-4);
+      z-index: 99; flex-direction: column; gap: var(--space-3);
+    }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { color: var(--text-2); text-decoration: none; font-size: 15px; padding: var(--space-1) 0; border-bottom: 1px solid var(--border); }
+    .nav-mobile a:last-child { border-bottom: none; }
+
+    /* ─── Buttons ───────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; font-family: var(--font-body); font-size: 14px;
+      font-weight: 500; text-decoration: none; cursor: pointer;
+      border: none; transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+      position: relative; border-radius: 2px;
+    }
+    .btn-primary { background: var(--crimson); color: #fff; }
+    .btn-primary:hover { background: var(--crimson-b); }
+    .btn-ghost { background: transparent; color: var(--text-2); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
+    .btn-arrow::after { content: '→'; transition: transform 0.2s ease; }
+    .btn-arrow:hover::after { transform: translateX(4px); }
+
+    /* ─── Hero ──────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding: 120px 0 var(--space-16);
+    }
+    .hero-label {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--crimson);
+      border: 1px solid var(--crimson-glow); background: var(--crimson-dim);
+      padding: 6px 14px; display: inline-block; margin-bottom: var(--space-4);
+    }
+    .hero h1 {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(52px, 8vw, 108px); line-height: 0.95;
+      letter-spacing: -0.02em; color: var(--text);
+      margin-bottom: var(--space-5);
+      text-shadow: 0 0 80px rgba(225,29,72,0.12);
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px); color: var(--text-2);
+      max-width: 600px; line-height: 1.65; margin-bottom: var(--space-6);
+      font-weight: 300;
+      text-shadow: 0 1px 12px rgba(9,9,11,0.8);
+    }
+    .hero-ctas { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-bottom: var(--space-10); }
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4);
+      padding-top: var(--space-8); border-top: 1px solid var(--border);
+    }
+    .hero-stat { display: flex; flex-direction: column; gap: 4px; }
+    .hero-stat-value {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: 40px; line-height: 1; color: var(--text);
+      text-shadow: 0 1px 12px rgba(9,9,11,0.8);
+    }
+    .hero-stat-label { font-size: 12px; color: var(--text-3); letter-spacing: 0.03em; }
+
+    /* ─── Problem Section ───────────────────────────────────────────── */
+    .section-problem { padding: var(--section-py) 0; }
+    .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); align-items: start; }
+    .problem-left h2 {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(36px, 5vw, 64px); line-height: 1.0; letter-spacing: -0.02em;
+      color: var(--text); margin-bottom: var(--space-4);
+    }
+    .problem-left p { color: var(--text-2); font-size: 15px; margin-bottom: var(--space-3); }
+    .problem-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-3); }
+    .problem-list li {
+      display: flex; gap: var(--space-3); align-items: flex-start;
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 14px; color: var(--text-2); line-height: 1.65;
+      backdrop-filter: blur(20px);
+    }
+    .problem-list li::before {
+      content: '—'; color: var(--crimson); flex-shrink: 0; font-weight: 500;
+    }
+
+    /* ─── The Reframe ────────────────────────────────────────────────── */
+    .section-reframe { padding: var(--section-py) 0; }
+    .reframe-quote {
+      max-width: 800px; margin: 0 auto var(--space-10);
+      text-align: center;
+    }
+    .reframe-quote blockquote {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(28px, 4vw, 52px); line-height: 1.2; letter-spacing: -0.01em;
+      color: var(--text); margin-bottom: var(--space-4);
+      text-shadow: 0 1px 24px rgba(9,9,11,0.9);
+    }
+    .reframe-quote cite { font-size: 13px; color: var(--text-3); letter-spacing: 0.08em; font-style: normal; }
+
+    .contrast-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);
+    }
+    .contrast-card {
+      padding: var(--space-5) var(--space-6);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+    }
+    .contrast-card.old { background: var(--surface); }
+    .contrast-card.new { background: var(--crimson-dim); border-color: var(--crimson-glow); }
+    .contrast-card h3 {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; margin-bottom: var(--space-3);
+    }
+    .contrast-card.old h3 { color: var(--text-3); }
+    .contrast-card.new h3 { color: var(--crimson); }
+    .contrast-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+    .contrast-list li { font-size: 14px; color: var(--text-2); line-height: 1.6; display: flex; gap: 10px; align-items: flex-start; }
+    .contrast-card.old .contrast-list li::before { content: '×'; color: var(--text-3); flex-shrink: 0; }
+    .contrast-card.new .contrast-list li::before { content: '→'; color: var(--crimson); flex-shrink: 0; }
+
+    /* ─── Process Section ───────────────────────────────────────────── */
+    .section-process { padding: var(--section-py) 0; }
+    .section-header { margin-bottom: var(--space-10); }
+    .section-header h2 {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(36px, 5vw, 64px); line-height: 1.0;
+      letter-spacing: -0.02em; color: var(--text); margin-bottom: var(--space-2);
+    }
+    .section-header p { color: var(--text-2); font-size: 16px; max-width: 560px; }
+    .process-steps { display: flex; flex-direction: column; gap: var(--space-3); }
+    .process-step {
+      display: grid; grid-template-columns: 64px 1fr;
+      gap: var(--space-5); align-items: start;
+      padding: var(--space-5) var(--space-6);
+      background: var(--surface); border: 1px solid var(--border);
+      backdrop-filter: blur(20px);
+      transition: border-color 0.2s;
+    }
+    .process-step:hover { border-color: var(--border-hover); }
+    .step-number {
+      font-family: var(--font-display); font-style: italic; font-size: 48px;
+      font-weight: 300; color: var(--crimson); opacity: 0.5; line-height: 1;
+    }
+    .step-content h3 {
+      font-size: 16px; font-weight: 500; color: var(--text);
+      margin-bottom: var(--space-1);
+    }
+    .step-content p { font-size: 14px; color: var(--text-2); line-height: 1.65; }
+
+    /* ─── Who This Is For ───────────────────────────────────────────── */
+    .section-for { padding: var(--section-py) 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .for-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); align-items: start; }
+    .for-left h2 {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(36px, 5vw, 60px); line-height: 1.0;
+      letter-spacing: -0.02em; color: var(--text); margin-bottom: var(--space-5);
+    }
+    .for-left p { color: var(--text-2); font-size: 15px; margin-bottom: var(--space-4); }
+    .for-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+    .for-list li {
+      display: flex; gap: var(--space-3); align-items: flex-start;
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 14px; color: var(--text-2); line-height: 1.65;
+      backdrop-filter: blur(20px);
+    }
+    .for-list li.is-for::before { content: '✓'; color: var(--crimson); flex-shrink: 0; font-weight: 600; }
+    .for-list li.not-for::before { content: '×'; color: var(--text-3); flex-shrink: 0; }
+    .not-for-divider {
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--text-3); padding: var(--space-2) 0 var(--space-1);
+    }
+
+    /* ─── Testimonials ──────────────────────────────────────────────── */
+    .section-testimonials { padding: var(--section-py) 0; }
+    .testimonial-featured {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: var(--space-8); margin-bottom: var(--space-5);
+      backdrop-filter: blur(20px);
+      position: relative;
+    }
+    .testimonial-featured::before {
+      content: '"'; position: absolute; top: -20px; left: var(--space-6);
+      font-family: var(--font-display); font-size: 120px; font-style: italic;
+      color: var(--crimson); opacity: 0.25; line-height: 1;
+      pointer-events: none;
+    }
+    .testimonial-featured blockquote {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(20px, 2.5vw, 28px); line-height: 1.45; color: var(--text);
+      margin-bottom: var(--space-5);
+    }
+    .testimonial-meta { display: flex; align-items: center; gap: var(--space-2); }
+    .testimonial-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--crimson-dim); border: 1px solid var(--crimson-glow);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 500; color: var(--crimson); flex-shrink: 0;
+    }
+    .testimonial-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .testimonial-title { font-size: 12px; color: var(--text-3); }
+    .testimonials-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3);
+    }
+    .testimonial-card {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: var(--space-5); backdrop-filter: blur(20px);
+      transition: border-color 0.2s;
+    }
+    .testimonial-card:hover { border-color: var(--border-hover); }
+    .testimonial-card blockquote {
+      font-size: 14px; color: var(--text-2); line-height: 1.7;
+      margin-bottom: var(--space-3); font-style: italic;
+    }
+
+    /* ─── About / Moat ──────────────────────────────────────────────── */
+    .section-moat { padding: var(--section-py) 0; }
+    .moat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); align-items: center; }
+    .moat-left h2 {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(36px, 5vw, 64px); line-height: 1.0;
+      letter-spacing: -0.02em; color: var(--text); margin-bottom: var(--space-4);
+    }
+    .moat-left p { color: var(--text-2); font-size: 15px; margin-bottom: var(--space-4); }
+    .moat-pullquote {
+      border-left: 3px solid var(--crimson); padding-left: var(--space-4); margin: var(--space-6) 0;
+    }
+    .moat-pullquote p {
+      font-family: var(--font-display); font-style: italic; font-size: 20px;
+      color: var(--text); line-height: 1.5;
+      text-shadow: 0 1px 12px rgba(9,9,11,0.8);
+    }
+    .credentials-stack { display: flex; flex-direction: column; gap: var(--space-2); }
+    .credential-item {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border: 1px solid var(--border); background: var(--surface);
+      backdrop-filter: blur(20px); transition: background 0.2s, border-color 0.2s;
+    }
+    .credential-item:hover { background: rgba(24,24,27,0.95); border-color: var(--border-hover); }
+    .credential-icon {
+      width: 36px; height: 36px; background: var(--crimson-dim);
+      border: 1px solid var(--crimson-glow);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; color: var(--crimson); flex-shrink: 0;
+    }
+    .credential-text strong { font-size: 13px; font-weight: 500; color: var(--text); display: block; }
+    .credential-text span { font-size: 12px; color: var(--text-3); }
+
+    /* ─── Offer / Application ───────────────────────────────────────── */
+    .section-offer {
+      padding: var(--section-py) 0;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .offer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-10); align-items: start; }
+    .offer-stack h2 {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(36px, 4.5vw, 56px); line-height: 1.05;
+      letter-spacing: -0.02em; color: var(--text); margin-bottom: var(--space-6);
+    }
+    .offer-items { display: flex; flex-direction: column; gap: var(--space-3); }
+    .offer-item {
+      padding: var(--space-4); border: 1px solid var(--border);
+      background: var(--surface); backdrop-filter: blur(20px);
+    }
+    .offer-item strong { font-size: 14px; font-weight: 500; color: var(--text); display: block; margin-bottom: 4px; }
+    .offer-item span { font-size: 13px; color: var(--text-3); line-height: 1.6; }
+
+    .offer-cta-box {
+      background: var(--surface); border: 1px solid var(--crimson-glow);
+      padding: var(--space-6); backdrop-filter: blur(20px);
+    }
+    .offer-cta-box h3 {
+      font-family: var(--font-display); font-style: italic; font-size: 28px;
+      color: var(--text); margin-bottom: var(--space-2); font-weight: 300;
+    }
+    .offer-cta-box p { color: var(--text-2); font-size: 14px; margin-bottom: var(--space-5); line-height: 1.65; }
+    .offer-cta-features { list-style: none; display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-6); }
+    .offer-cta-features li {
+      font-size: 14px; color: var(--text-2); display: flex; gap: 10px; align-items: flex-start;
+    }
+    .offer-cta-features li::before { content: '→'; color: var(--crimson); flex-shrink: 0; font-size: 13px; }
+    .offer-fine { font-size: 12px; color: var(--text-3); margin-top: var(--space-3); text-align: center; }
+
+    /* ─── FAQ ────────────────────────────────────────────────────────── */
+    .section-faq { padding: var(--section-py) 0; }
+    .faq-list { display: flex; flex-direction: column; gap: var(--space-2); }
+    .faq-item { border: 1px solid var(--border); background: var(--surface); backdrop-filter: blur(20px); }
+    .faq-trigger {
+      width: 100%; background: none; border: none; cursor: pointer;
+      padding: var(--space-4) var(--space-5); display: flex;
+      justify-content: space-between; align-items: center; gap: var(--space-4);
+      text-align: left; transition: background 0.2s;
+    }
+    .faq-trigger:hover { background: rgba(255,255,255,0.03); }
+    .faq-trigger[aria-expanded="true"] { background: rgba(225,29,72,0.05); }
+    .faq-question { font-size: 15px; font-weight: 400; color: var(--text); line-height: 1.5; }
+    .faq-icon {
+      color: var(--crimson); font-size: 20px; flex-shrink: 0;
+      transition: transform 0.3s; font-weight: 300; line-height: 1;
+    }
+    .faq-trigger[aria-expanded="true"] .faq-icon { transform: rotate(45deg); }
+    .faq-body { display: none; }
+    .faq-body.open { display: block; }
+    .faq-answer {
+      padding: 0 var(--space-5) var(--space-4);
+      font-size: 14px; color: var(--text-2); line-height: 1.75;
+    }
+
+    /* ─── Final CTA ─────────────────────────────────────────────────── */
+    .section-final-cta { padding: var(--section-py) 0; text-align: center; }
+    .final-cta-h2 {
+      font-family: var(--font-display); font-style: italic; font-weight: 300;
+      font-size: clamp(36px, 5vw, 68px); line-height: 1.05;
+      letter-spacing: -0.02em; color: var(--text);
+      max-width: 800px; margin: 0 auto var(--space-5);
+      text-shadow: 0 1px 24px rgba(9,9,11,0.9);
+    }
+    .final-cta-sub {
+      color: var(--text-2); font-size: 17px; max-width: 520px;
+      margin: 0 auto var(--space-8); line-height: 1.65;
+    }
+    .final-cta-buttons { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; }
+
+    /* ─── Footer ─────────────────────────────────────────────────────── */
+    .footer {
+      border-top: 1px solid var(--border); padding: var(--space-6) 0;
+      position: relative; z-index: 2;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--space-4); flex-wrap: wrap;
+    }
+    .footer-logo {
+      font-family: var(--font-body); font-weight: 500; font-size: 16px;
+      color: var(--text); text-decoration: none;
+    }
+    .footer-logo span { color: var(--crimson); }
+    .footer-links { list-style: none; display: flex; gap: var(--space-5); flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: var(--text-3); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-2); }
+    .footer-copy { font-size: 12px; color: var(--text-3); }
+
+    /* ─── Sticky Mobile CTA ─────────────────────────────────────────── */
+    .sticky-mobile-cta {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      padding: var(--space-3) var(--space-4);
+      background: rgba(9,9,11,0.97); backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border); z-index: 200;
+    }
+    .sticky-mobile-cta a { width: 100%; text-align: center; justify-content: center; }
+
+    /* ─── Glass panels readability ──────────────────────────────────── */
+    .section-problem .problem-list li,
+    .process-step,
+    .contrast-card,
+    .for-list li,
+    .testimonial-featured,
+    .testimonial-card,
+    .offer-item,
+    .offer-cta-box,
+    .credential-item,
+    .faq-item {
+      background: rgba(17,17,19,0.88) !important;
+      backdrop-filter: blur(20px) !important;
+    }
+
+    /* ─── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-hamburger { display: flex; }
+      .problem-grid, .contrast-grid, .for-grid, .moat-grid, .offer-grid { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .process-step { grid-template-columns: 48px 1fr; }
+      .sticky-mobile-cta { display: block; }
+      .hero { padding-bottom: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="scroll-progress" role="progressbar" aria-hidden="true"></div>
+  <div id="ambient-orb" aria-hidden="true"></div>
+  <canvas id="terrain-canvas" aria-hidden="true"></canvas>
+  <div id="vignette" aria-hidden="true"></div>
+
+  <!-- ── Navigation ─────────────────────────────────────────────────── -->
+  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
+    <a href="/" class="nav-logo">Attune<span>.</span></a>
+    <ul class="nav-links" role="list">
+      <li><a href="#process">How It Works</a></li>
+      <li><a href="#testimonials">Results</a></li>
+      <li><a href="#moat">About Sam</a></li>
+      <li><a href="/" >Foundations Course</a></li>
+      <li><a href="#offer" class="btn btn-primary nav-cta">Apply to Work Together</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-expanded="false" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="nav-mobile" id="mobile-nav" role="navigation" aria-label="Mobile navigation">
+    <a href="#process">How It Works</a>
+    <a href="#testimonials">Results</a>
+    <a href="#moat">About Sam</a>
+    <a href="/">Foundations Course</a>
+    <a href="#offer" class="btn btn-primary" style="text-align:center;justify-content:center;">Apply to Work Together</a>
+  </div>
+
+  <main>
+
+    <!-- ── Hero ───────────────────────────────────────────────────────── -->
+    <section class="hero" id="hero">
+      <div class="container">
+        <div class="reveal">
+          <span class="hero-label">1-on-1 Coaching · Attune</span>
+        </div>
+
+        <h1 class="reveal reveal-delay-1">
+          You already know<br>what to do.
+        </h1>
+
+        <p class="hero-sub reveal reveal-delay-2">
+          That's not the problem. You've read the books. Done the programs. Consumed every framework worth consuming. The gap isn't knowledge — it's the environment you're applying it in. That's what we fix.
+        </p>
+
+        <div class="hero-ctas reveal reveal-delay-3">
+          <a href="#offer" class="btn btn-primary btn-arrow">Apply to Work Together</a>
+          <a href="#process" class="btn btn-ghost">See how it works →</a>
+        </div>
+
+        <div class="hero-stats reveal reveal-delay-4">
+          <div class="hero-stat">
+            <span class="hero-stat-value" data-countup="2" data-suffix="×">0</span>
+            <span class="hero-stat-label">NCAA National Championships</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-value" data-countup="6" data-suffix="×">0</span>
+            <span class="hero-stat-label">All-American Honors</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-value" data-countup="500" data-suffix="+">0</span>
+            <span class="hero-stat-label">Students & Coaches Trained</span>
+          </div>
+          <div class="hero-stat">
+            <span class="hero-stat-value" data-countup="5" data-suffix=" yrs">0</span>
+            <span class="hero-stat-label">Applied Study: Gibson, Bernstein, Davids</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Problem ─────────────────────────────────────────────────────── -->
+    <section class="section-problem" id="problem" aria-labelledby="problem-heading">
+      <div class="container">
+        <div class="problem-grid">
+          <div class="problem-left reveal">
+            <span class="section-label">The Problem</span>
+            <h2 id="problem-heading">You recognize this.</h2>
+            <p>You're not stuck because you don't know enough. You're stuck because the environment you're training in — or operating in — isn't producing the outcomes you need. That's an environmental problem, not a knowledge problem.</p>
+            <p>The books gave you principles. The programs gave you protocols. Nobody changed the environment.</p>
+          </div>
+          <div class="problem-right reveal reveal-delay-2">
+            <ul class="problem-list" role="list">
+              <li>You've read it all and you still can't bridge the gap between knowing and doing.</li>
+              <li>Training was perfect. Competition arrived — different athlete. Again.</li>
+              <li>You hired a coach. Got a lot of questions reflected back. Nothing you couldn't have figured out with a notebook and two hours.</li>
+              <li>Smart, driven, willing to do the work. Still plateaued. You can feel the ceiling but can't see what's holding it up.</li>
+              <li>You sense the method is broken. You just don't have a name for why yet.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── The Reframe ──────────────────────────────────────────────────── -->
+    <section class="section-reframe" id="reframe" aria-labelledby="reframe-heading">
+      <div class="container">
+        <div class="reframe-quote reveal">
+          <blockquote>
+            Most coaches prescribe what to do.<br>I design the environment where the right thing has to happen.
+          </blockquote>
+          <cite>— The Attune Method</cite>
+        </div>
+
+        <div class="contrast-grid reveal reveal-delay-1">
+          <div class="contrast-card old">
+            <h3>Generic Coaching</h3>
+            <ul class="contrast-list">
+              <li>Asks questions until you arrive at conclusions you already knew</li>
+              <li>Prescribes protocols from a framework that wasn't built for your context</li>
+              <li>$150/hr for someone to repackage what you've already read</li>
+              <li>Results are conditional on your motivation after the call</li>
+              <li>Could be replaced by a good book and an honest friend</li>
+            </ul>
+          </div>
+          <div class="contrast-card new">
+            <h3>Attune 1-on-1</h3>
+            <ul class="contrast-list">
+              <li>Diagnoses the specific environmental constraints producing your plateau</li>
+              <li>Redesigns the conditions where the skill — or the result — has to emerge</li>
+              <li>Applies ecological dynamics directly to your domain: sport, business, or practice</li>
+              <li>Accountability structure built into the environment, not willpower</li>
+              <li>You leave each session with a redesigned constraint, not a homework list</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── How It Works ─────────────────────────────────────────────────── -->
+    <section class="section-process" id="process" aria-labelledby="process-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">How It Works</span>
+          <h2 id="process-heading">What a 6-week engagement looks like</h2>
+          <p>Not a program. Not a protocol. A structured redesign of the environment producing your current results.</p>
+        </div>
+
+        <div class="process-steps">
+          <div class="process-step reveal reveal-delay-1">
+            <span class="step-number">01</span>
+            <div class="step-content">
+              <h3>Environmental Audit</h3>
+              <p>Session 1 is diagnostic. We map the exact constraints producing your current plateau — task, environment, and organism constraints together. You leave knowing precisely what's creating the gap, not guessing at it.</p>
+            </div>
+          </div>
+          <div class="process-step reveal reveal-delay-2">
+            <span class="step-number">02</span>
+            <div class="step-content">
+              <h3>Constraint Redesign</h3>
+              <p>Sessions 2–4 are applied. We redesign the environment — not what you do, but the conditions under which you do it. One constraint changed per session. Small enough to execute. Large enough to shift the pattern.</p>
+            </div>
+          </div>
+          <div class="process-step reveal reveal-delay-3">
+            <span class="step-number">03</span>
+            <div class="step-content">
+              <h3>Transfer & Integration</h3>
+              <p>Sessions 5–6 are integration. The shift has to stick across contexts — not just in the environment we designed together, but in the real conditions you perform in. We test it, adjust it, and anchor it.</p>
+            </div>
+          </div>
+          <div class="process-step reveal reveal-delay-4">
+            <span class="step-number">04</span>
+            <div class="step-content">
+              <h3>Between Sessions</h3>
+              <p>Each session ends with one constraint to implement — not a homework list, a single designed change. You apply it. The environment produces the feedback. We review it next session. The results are the data.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Who This Is For ──────────────────────────────────────────────── -->
+    <section class="section-for" id="for-whom" aria-labelledby="for-heading">
+      <div class="container">
+        <div class="for-grid">
+          <div class="for-left reveal">
+            <span class="section-label">Who This Is For</span>
+            <h2 id="for-heading">This is not for everyone.</h2>
+            <p>Specifically, this is for the person who already knows enough — and is ready to change the environment instead of consuming more knowledge.</p>
+            <p>If you need someone to tell you what to do, this isn't the right fit. If you're ready to understand why your current environment is producing current results — and design better constraints — it is.</p>
+          </div>
+          <div class="for-right reveal reveal-delay-2">
+            <ul class="for-list" role="list">
+              <li class="is-for">Coaches who've been coaching for years and still can't explain exactly why some athletes transfer and others don't.</li>
+              <li class="is-for">Athletes who perform perfectly in practice and fall apart in competition — and have tried everything they've been told to try.</li>
+              <li class="is-for">Creators and entrepreneurs who are smart, driven, doing the work — and still hitting the same ceiling every quarter.</li>
+              <li class="is-for">Anyone who can feel the gap between their current results and what they know they're capable of — and is ready to diagnose it properly.</li>
+              <div class="not-for-divider">Not for</div>
+              <li class="not-for">People who want a prescriptive protocol and someone to tell them exactly what to do each week.</li>
+              <li class="not-for">Anyone looking for motivation, accountability without understanding, or a coach to blame when things don't work.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Testimonials ─────────────────────────────────────────────────── -->
+    <section class="section-testimonials" id="testimonials" aria-labelledby="testimonials-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Results</span>
+          <h2 id="testimonials-heading">What students say</h2>
+        </div>
+
+        <div class="testimonial-featured reveal reveal-delay-1">
+          <blockquote>
+            "One drill with manipulation constraints instead of prescriptive cues. I was reading the play two steps earlier. Four weeks later, that's my new baseline."
+          </blockquote>
+          <div class="testimonial-meta">
+            <div class="testimonial-avatar" aria-hidden="true">—</div>
+            <div>
+              <div class="testimonial-name">NCAA Track Athlete</div>
+              <div class="testimonial-title">Division I (Anonymous)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="testimonials-grid" role="list">
+          <article class="testimonial-card reveal reveal-delay-1" role="listitem">
+            <blockquote>
+              "Six weeks after Module 2, my athletes were reading the game differently — fewer cues from me, more autonomous responses from them. I stopped prescribing and started designing environments."
+            </blockquote>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar" aria-hidden="true">FF</div>
+              <div>
+                <div class="testimonial-name">Francesco Fonte</div>
+                <div class="testimonial-title">Performance Coach</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-card reveal reveal-delay-2" role="listitem">
+            <blockquote>
+              "Three weeks in, I stopped forcing outcomes and started designing conditions. First month: signed two new partnerships without 'closing' either. The environment was right."
+            </blockquote>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar" aria-hidden="true">JP</div>
+              <div>
+                <div class="testimonial-name">Jay Pages</div>
+                <div class="testimonial-title">Entrepreneur &amp; Athlete</div>
+              </div>
+            </div>
+          </article>
+
+          <article class="testimonial-card reveal reveal-delay-3" role="listitem">
+            <blockquote>
+              "My students felt the difference in their first session. 15 years of coaching — this framework collapsed everything I thought I knew into something that actually works."
+            </blockquote>
+            <div class="testimonial-meta">
+              <div class="testimonial-avatar" aria-hidden="true">—</div>
+              <div>
+                <div class="testimonial-name">Head Coach</div>
+                <div class="testimonial-title">BJJ Academy (Anonymous)</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── About Sam ────────────────────────────────────────────────────── -->
+    <section class="section-moat" id="moat" aria-labelledby="moat-heading">
+      <div class="container">
+        <div class="moat-grid">
+          <div class="moat-left reveal">
+            <span class="section-label">About Sam</span>
+            <h2 id="moat-heading">Every other ecological dynamics teacher came from the lab.</h2>
+            <p>Sam came from the field and won twice before he had a name for any of it. 2× NCAA National Champion discus thrower. 6× All-American. A perception-action sport performed at the highest level — then 5 years studying the science that explained why it worked.</p>
+
+            <div class="moat-pullquote">
+              <p>"I didn't discover ecological dynamics. I lived it for a decade before I had a name for it. That's the difference between someone who studied the theory and someone who forged skill in the field."</p>
+            </div>
+
+            <p>That origin matters for 1-on-1 work. You don't need someone who read the same books you did. You need someone who has been where the gap feels impossible to close — and found the specific environmental change that closed it.</p>
+          </div>
+
+          <div class="credentials-stack reveal reveal-delay-2">
+            <div class="credential-item">
+              <div class="credential-icon" aria-hidden="true">2×</div>
+              <div class="credential-text">
+                <strong>NCAA National Champion</strong>
+                <span>Discus throw — highest level of collegiate competition</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="credential-icon" aria-hidden="true">6×</div>
+              <div class="credential-text">
+                <strong>All-American Honors</strong>
+                <span>5 years of elite performance in a perception-action sport</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="credential-icon" aria-hidden="true">5yr</div>
+              <div class="credential-text">
+                <strong>Applied Study: Gibson, Bernstein, Davids</strong>
+                <span>The scientists most coaches have never read — applied to everything</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="credential-icon" aria-hidden="true">SN</div>
+              <div class="credential-text">
+                <strong>Signal/Noise Newsletter</strong>
+                <span>Weekly translation of the science for coaches, athletes, and creators</span>
+              </div>
+            </div>
+            <div class="credential-item">
+              <div class="credential-icon" aria-hidden="true">500</div>
+              <div class="credential-text">
+                <strong>500+ Students &amp; Coaches</strong>
+                <span>Across sport, business, and creative domains</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── The Offer ────────────────────────────────────────────────────── -->
+    <section class="section-offer" id="offer" aria-labelledby="offer-heading">
+      <div class="container">
+        <div class="offer-grid">
+          <div class="offer-stack reveal">
+            <span class="section-label">The Engagement</span>
+            <h2 id="offer-heading">6 weeks. One environmental redesign at a time.</h2>
+
+            <div class="offer-items">
+              <div class="offer-item">
+                <strong>Environmental Audit (Session 1)</strong>
+                <span>A full diagnostic of the constraints producing your current plateau. You leave knowing exactly what's creating the gap — not a list of things to try, a precise diagnosis of what to change.</span>
+              </div>
+              <div class="offer-item">
+                <strong>Weekly 1-on-1 Sessions (Sessions 2–6)</strong>
+                <span>60 minutes per session. Applied constraint redesign for your specific domain — coaching practice, athletic performance, or creator/business work. One change per session. Implemented before the next.</span>
+              </div>
+              <div class="offer-item">
+                <strong>Between-Session Support</strong>
+                <span>Direct access via email between sessions. When the constraint produces unexpected results — or when you need to adjust before next week — I'm reachable.</span>
+              </div>
+              <div class="offer-item">
+                <strong>The Foundations Course — Included</strong>
+                <span>Full access to all 8 modules and the Foundations Workbook. The theoretical framework that makes every session make sense. Yours to keep after the engagement ends.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="offer-cta-box reveal reveal-delay-2">
+            <span class="section-label">Apply</span>
+            <h3>Spots are limited.<br>Application required.</h3>
+            <p>1-on-1 work is high-investment on both sides. I take a small number of engagements at a time — enough to do the diagnostic work properly. The application tells me whether ecological dynamics applied to your specific situation is the right fit before we commit to the work.</p>
+
+            <ul class="offer-cta-features" role="list">
+              <li>6 weekly 1-on-1 sessions (60 min each)</li>
+              <li>Full Foundations course access — included</li>
+              <li>Between-session email support</li>
+              <li>Applied to your domain: sport, business, or coaching practice</li>
+              <li>If Session 1 doesn't shift how you see your environment, I'll refund in full — same day.</li>
+            </ul>
+
+            <a href="https://attunemastery.com/apply" class="btn btn-primary btn-arrow" style="width:100%;justify-content:center;font-size:15px;padding:16px 32px;">
+              Apply to Work Together
+            </a>
+
+            <p class="offer-fine">Application takes 5 minutes. I reply within 48 hours.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ─────────────────────────────────────────────────────────── -->
+    <section class="section-faq" id="faq" aria-labelledby="faq-heading">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">FAQ</span>
+          <h2 id="faq-heading">Real questions, honest answers.</h2>
+        </div>
+
+        <div class="faq-list reveal reveal-delay-1" role="list">
+          <div class="faq-item" role="listitem">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-1">
+              <span class="faq-question">What's the difference between this and Foundations?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-body" id="faq-1" role="region">
+              <div class="faq-answer">
+                Foundations gives you the model. 1-on-1 applies the model to your specific situation. The course teaches you what ecological dynamics is and why it changes how you design training or work environments. The coaching engagement takes your specific plateau — your exact domain, your exact constraints — and redesigns it with you. Foundations is included in the 1-on-1 engagement because the sessions make more sense when you have the framework underneath them.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item" role="listitem">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-2">
+              <span class="faq-question">Is this therapy? Is this life coaching?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-body" id="faq-2" role="region">
+              <div class="faq-answer">
+                Neither. Therapy addresses clinical mental health. Life coaching — at its generic form — helps you clarify values and set goals you already know how to set. This is applied ecological dynamics: a specific diagnostic and redesign framework for the environment producing your current performance. If you have a clinical concern, see a clinician. If you need help connecting with your purpose, that's not what we do here. If you have a specific performance plateau and want to understand why it exists and how to change the conditions producing it — that's exactly this.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item" role="listitem">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-3">
+              <span class="faq-question">I'm not an athlete. Does this apply to me?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-body" id="faq-3" role="region">
+              <div class="faq-answer">
+                Jay Pages used this framework to sign two new business partnerships in his first month without closing a single deal the traditional way. The BJJ head coach redesigned his entire practice environment in the first session. Ecological dynamics is a perception-action model — it applies wherever a person is trying to produce a skilled performance in a complex environment. Business negotiation, creative practice, coaching practice, athletic performance. The constraint categories are the same. The diagnostic process is the same. The domain is what changes.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item" role="listitem">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-4">
+              <span class="faq-question">How much does it cost?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-body" id="faq-4" role="region">
+              <div class="faq-answer">
+                Pricing is discussed after the application — not because it's hidden, but because the engagement is customized based on the diagnostic. What I can tell you: it's not $150/hr for repackaged advice. It's a results-based engagement designed around a specific outcome, with a clear start and end. If the investment is going to be a problem, the application will make that clear early and we won't waste each other's time.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item" role="listitem">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-5">
+              <span class="faq-question">What if it doesn't work?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-body" id="faq-5" role="region">
+              <div class="faq-answer">
+                If Session 1 — the Environmental Audit — doesn't produce a shift in how you see the constraints producing your current results, I'll refund in full, same day, no friction. That session alone is worth the application. If the diagnostic doesn't land, we stop there. I'm confident enough in what the first session does that I'll back it completely.
+              </div>
+            </div>
+          </div>
+
+          <div class="faq-item" role="listitem">
+            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-6">
+              <span class="faq-question">How do I know you're not just another coach with a framework?</span>
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-body" id="faq-6" role="region">
+              <div class="faq-answer">
+                You don't — yet. Apply. The application itself will tell you whether this is the right fit. If it reads like every other coaching sales page you've seen, don't apply. If the Environmental Audit concept is the first thing you've heard that actually names the problem you've been feeling — that's signal worth paying attention to. I'm not asking you to take it on faith. I'm asking you to spend 5 minutes on the application and see whether the diagnostic resonates with your situation before we commit to anything.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Final CTA ────────────────────────────────────────────────────── -->
+    <section class="section-final-cta" id="final-cta" aria-labelledby="final-cta-heading">
+      <div class="container">
+        <h2 class="final-cta-h2 reveal" id="final-cta-heading">
+          The environment was always the teacher. You were just in the wrong classroom.
+        </h2>
+        <p class="final-cta-sub reveal reveal-delay-1">
+          Let's build the right one.
+        </p>
+        <div class="final-cta-buttons reveal reveal-delay-2">
+          <a href="https://attunemastery.com/apply" class="btn btn-primary btn-arrow" style="font-size:15px;padding:16px 32px;">
+            Apply to Work Together
+          </a>
+          <a href="/" class="btn btn-ghost">
+            Start with Foundations first →
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ──────────────────────────────────────────────────────── -->
+  <footer class="footer" aria-label="Site footer">
+    <div class="container">
+      <div class="footer-inner">
+        <a href="/" class="footer-logo">Attune<span>.</span></a>
+        <ul class="footer-links" role="list">
+          <li><a href="/#shift">Method</a></li>
+          <li><a href="/#testimonials">Results</a></li>
+          <li><a href="#moat">About</a></li>
+          <li><a href="https://signalnoise.substack.com" target="_blank" rel="noopener noreferrer">Signal/Noise</a></li>
+          <li><a href="mailto:sam@attunemastery.com">Contact</a></li>
+        </ul>
+        <span class="footer-copy">© 2026 Attune · attunemastery.com</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── Sticky Mobile CTA ──────────────────────────────────────────── -->
+  <div class="sticky-mobile-cta" id="sticky-cta" aria-label="Apply sticky CTA">
+    <a href="#offer" class="btn btn-primary btn-arrow">Apply to Work Together</a>
+  </div>
+
+  <!-- ─── Scripts ──────────────────────────────────────────────────── -->
+  <script>
+  (() => {
+    'use strict';
+
+    /* ── Terrain Canvas ─────────────────────────────────────────── */
+    const canvas = document.getElementById('terrain-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    const GW = 160, GH = 110;
+    let animT = 0;
+
+    function resizeCanvas() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function getHeight(nx, ny, t) {
+      return (
+        Math.sin(nx * 3.4 + t * 0.22) * 0.28 +
+        Math.sin(ny * 2.9 - t * 0.17) * 0.24 +
+        Math.sin((nx + ny) * 4.8 + t * 0.11) * 0.20 +
+        Math.sin(nx * 7.2 + ny * 5.1 - t * 0.08) * 0.14 +
+        Math.sin(nx * 1.8 - ny * 6.3 + t * 0.19) * 0.09 +
+        Math.sin(nx * 11 + ny * 4 + t * 0.05) * 0.05
+      );
+    }
+
+    function edgeLerp(a, b, threshold) {
+      const d = b - a;
+      return Math.abs(d) < 0.0001 ? 0.5 : Math.max(0, Math.min(1, (threshold - a) / d));
+    }
+
+    function drawTerrain() {
+      if (!W || !H) return;
+      ctx.clearRect(0, 0, W, H);
+      const cellW = W / GW, cellH = H / GH;
+      const field = [];
+      for (let y = 0; y <= GH; y++) {
+        field[y] = [];
+        for (let x = 0; x <= GW; x++) {
+          field[y][x] = getHeight(x / GW, y / GH, animT);
+        }
+      }
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255,255,255,0.055)';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      for (let x = 0; x <= GW; x++) { ctx.moveTo(x * cellW, 0); ctx.lineTo(x * cellW, H); }
+      for (let y = 0; y <= GH; y++) { ctx.moveTo(0, y * cellH); ctx.lineTo(W, y * cellH); }
+      ctx.stroke();
+      ctx.restore();
+
+      const LEVELS = 52;
+      const minH = -1, maxH = 1;
+
+      for (let li = 0; li < LEVELS; li++) {
+        const t = li / (LEVELS - 1);
+        const threshold = minH + t * (maxH - minH);
+        const isRidge = li % 13 === 0;
+        const isMajor = li % 4 === 0;
+        const alpha = isRidge ? 0.52 : isMajor ? 0.20 : 0.07;
+        const lw = isRidge ? 1.0 : isMajor ? 0.6 : 0.35;
+
+        ctx.save();
+        ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+        ctx.lineWidth = lw;
+        ctx.beginPath();
+        let hasPath = false;
+
+        for (let cy = 0; cy < GH; cy++) {
+          for (let cx = 0; cx < GW; cx++) {
+            const tl = field[cy][cx], tr = field[cy][cx+1];
+            const bl = field[cy+1][cx], br = field[cy+1][cx+1];
+            const avg = (tl + tr + bl + br) / 4;
+
+            let idx = 0;
+            if (tl > threshold) idx |= 1;
+            if (tr > threshold) idx |= 2;
+            if (br > threshold) idx |= 4;
+            if (bl > threshold) idx |= 8;
+
+            const x0 = cx * cellW, y0 = cy * cellH;
+            const x1 = x0 + cellW, y1 = y0 + cellH;
+
+            const top = x0 + edgeLerp(tl, tr, threshold) * cellW;
+            const bot = x0 + edgeLerp(bl, br, threshold) * cellW;
+            const lft = y0 + edgeLerp(tl, bl, threshold) * cellH;
+            const rgt = y0 + edgeLerp(tr, br, threshold) * cellH;
+
+            const segs = [];
+            if (idx === 5)  { segs.push(avg > threshold ? [[top,y0],[x1,rgt]] : [[top,y0],[x0,lft]]); segs.push(avg > threshold ? [[bot,y1],[x0,lft]] : [[bot,y1],[x1,rgt]]); }
+            else if (idx === 10) { segs.push(avg > threshold ? [[top,y0],[x0,lft]] : [[top,y0],[x1,rgt]]); segs.push(avg > threshold ? [[bot,y1],[x1,rgt]] : [[bot,y1],[x0,lft]]); }
+            else {
+              const edges = {
+                1:[[top,y0],[x0,lft]], 2:[[top,y0],[x1,rgt]], 3:[[x0,lft],[x1,rgt]],
+                4:[[bot,y1],[x1,rgt]], 6:[[top,y0],[bot,y1]], 7:[[bot,y1],[x0,lft]],
+                8:[[bot,y1],[x0,lft]], 9:[[top,y0],[bot,y1]], 11:[[top,y0],[x1,rgt]],
+                12:[[x0,lft],[x1,rgt]], 13:[[bot,y1],[x1,rgt]], 14:[[top,y0],[x0,lft]]
+              };
+              if (edges[idx]) segs.push(edges[idx]);
+            }
+
+            for (const [[ax,ay],[bx,by]] of segs) {
+              ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
+              hasPath = true;
+            }
+          }
+        }
+        if (hasPath) ctx.stroke();
+        ctx.restore();
+      }
+    }
+
+    function animate() {
+      animT += 0.008;
+      drawTerrain();
+      requestAnimationFrame(animate);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    animate();
+
+    /* ── Ambient Orb ────────────────────────────────────────────── */
+    const orb = document.getElementById('ambient-orb');
+    document.addEventListener('mousemove', e => {
+      orb.style.left = e.clientX + 'px';
+      orb.style.top  = e.clientY + 'px';
+    });
+
+    /* ── Nav Scroll ─────────────────────────────────────────────── */
+    const nav = document.getElementById('main-nav');
+    const progressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 80);
+      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+      progressBar.style.width = pct + '%';
+    }, { passive: true });
+
+    /* ── Hamburger ──────────────────────────────────────────────── */
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobile-nav');
+    hamburger.addEventListener('click', () => {
+      const open = hamburger.classList.toggle('open');
+      mobileNav.classList.toggle('open', open);
+      hamburger.setAttribute('aria-expanded', open);
+    });
+
+    /* ── Scroll Reveal ──────────────────────────────────────────── */
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    revealEls.forEach(el => revealObs.observe(el));
+
+    /* ── Count-Up ───────────────────────────────────────────────── */
+    const countEls = document.querySelectorAll('[data-countup]');
+    const countObs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        const el = e.target;
+        const target = +el.dataset.countup;
+        const suffix = el.dataset.suffix || '';
+        const dur = 1200;
+        const start = performance.now();
+        const update = now => {
+          const p = Math.min((now - start) / dur, 1);
+          const ease = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(ease * target) + suffix;
+          if (p < 1) requestAnimationFrame(update);
+        };
+        requestAnimationFrame(update);
+        countObs.unobserve(el);
+      });
+    }, { threshold: 0.3 });
+    countEls.forEach(el => countObs.observe(el));
+
+    /* ── FAQ ────────────────────────────────────────────────────── */
+    document.querySelectorAll('.faq-trigger').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const expanded = trigger.getAttribute('aria-expanded') === 'true';
+        document.querySelectorAll('.faq-trigger').forEach(t => {
+          t.setAttribute('aria-expanded', 'false');
+          t.querySelector('.faq-icon').textContent = '+';
+          const bodyId = t.getAttribute('aria-controls');
+          document.getElementById(bodyId)?.classList.remove('open');
+        });
+        if (!expanded) {
+          trigger.setAttribute('aria-expanded', 'true');
+          trigger.querySelector('.faq-icon').textContent = '×';
+          const bodyId = trigger.getAttribute('aria-controls');
+          document.getElementById(bodyId)?.classList.add('open');
+        }
+      });
+    });
+
+    /* ── Sticky Mobile CTA ──────────────────────────────────────── */
+    const stickyCta = document.getElementById('sticky-cta');
+    window.addEventListener('scroll', () => {
+      stickyCta.style.transform = window.scrollY > 600 ? 'translateY(0)' : 'translateY(100%)';
+    }, { passive: true });
+    stickyCta.style.transform = 'translateY(100%)';
+    stickyCta.style.transition = 'transform 0.3s ease';
+
+  })();
+  </script>
+
+</body>
+</html>
