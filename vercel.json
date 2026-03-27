@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/coaching", "destination": "/coaching.html" }
+  ]
+}
