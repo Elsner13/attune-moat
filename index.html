@@ -7,146 +7,61 @@
   <meta name="description" content="For coaches and athletes who've drilled everything right and still lose it when it counts. Foundations is the framework built on the science of why skill transfers — and why it doesn't." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
-    /* ─── Reset & Base ─────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
     :root {
-      --bg: #09090b;
-      --surface: #111113;
-      --surface-2: #18181b;
-      --border: rgba(255,255,255,0.08);
+      --bg:           #09090b;
+      --surface:      #111113;
+      --border:       rgba(255,255,255,0.08);
       --border-hover: rgba(255,255,255,0.16);
-      --spring: cubic-bezier(0.16, 1, 0.3, 1);   /* spring easing for all meaningful motion */
-      --text: #fafafa;
-      --text-2: rgba(250,250,250,0.80);  /* was .65 — much easier to read against terrain */
-      --text-3: rgba(250,250,250,0.55);  /* was .42 — labels/captions now clearly legible */
-      --crimson: #e11d48;
-      --crimson-b: #f43f5e;
-      --crimson-dim: rgba(225,29,72,0.10);
-      --crimson-glow: rgba(225,29,72,0.20);
+      --text:         #fafafa;
+      --text-2:       rgba(250,250,250,0.72);
+      --text-3:       rgba(250,250,250,0.42);
+      --crimson:      #e11d48;
+      --crimson-b:    #f43f5e;
 
       --font-display: 'Cormorant Garamond', Georgia, serif;
-      --font-body: 'Inter', system-ui, sans-serif;
-
-      --space-1: 8px;
-      --space-2: 16px;
-      --space-3: 24px;
-      --space-4: 32px;
-      --space-5: 40px;
-      --space-6: 48px;
-      --space-8: 64px;
-      --space-10: 80px;
-      --space-12: 96px;
-      --space-16: 128px;
-
-      --section-py: clamp(96px, 10vw, 160px);
-      --max-w: 1100px;
+      --font-body:    'Inter', system-ui, sans-serif;
     }
 
-    html {
-      background: var(--bg);
-    }
+    html { background: var(--bg); }
 
     body {
-      background: transparent;
+      background: var(--bg);
       color: var(--text);
       font-family: var(--font-body);
       font-size: 16px;
-      line-height: 1.75;
-      text-rendering: optimizeLegibility;
+      line-height: 1.85;
       font-weight: 300;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ─── Scroll Progress Bar ──────────────────────────────────────── */
+    /* ── Scroll Progress ─────────────────────────────────────────── */
     #scroll-progress {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 3px;
-      width: 0%;
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
       background: var(--crimson);
       z-index: 9999;
       transition: width 0.1s linear;
     }
 
-    /* ─── Terrain Canvas ────────────────────────────────────────────── */
-    #terrain-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* ─── Ambient Orb ───────────────────────────────────────────────── */
-    #ambient-orb { display: none; }
-
-    /* ─── Layout Helpers ────────────────────────────────────────────── */
-    .container {
-      max-width: var(--max-w);
+    /* ── Page Layout ─────────────────────────────────────────────── */
+    .page {
+      max-width: 660px;
       margin: 0 auto;
-      padding: 0 var(--space-4);
-      position: relative;
-      z-index: 2;
+      padding: clamp(36px, 7vw, 52px) clamp(20px, 6vw, 40px) 120px;
     }
 
-    .section-label {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--crimson);
-      margin-bottom: var(--space-3);
-      display: block;
-    }
-
-    /* ─── Scroll Reveal ─────────────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(16px); /* subtler lift — 24px is too much drama for minimalist */
-      transition: opacity 0.55s var(--spring), transform 0.55s var(--spring);
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .reveal-delay-1 { transition-delay: 0.08s; }
-    .reveal-delay-2 { transition-delay: 0.16s; }
-    .reveal-delay-3 { transition-delay: 0.24s; }
-    .reveal-delay-4 { transition-delay: 0.32s; }
-    .reveal-delay-5 { transition-delay: 0.40s; }
-    .reveal-delay-5 { transition-delay: 0.5s; }
-
-    /* ─── Navigation ────────────────────────────────────────────────── */
+    /* ── Nav ─────────────────────────────────────────────────────── */
     .nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      padding: 0 var(--space-4);
-      height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(9,9,11,0);
-      backdrop-filter: blur(0px);
-      border-bottom: 1px solid transparent;
-      transition: background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease;
-    }
-
-    .nav.scrolled {
-      background: rgba(9,9,11,0.95);
-      backdrop-filter: blur(16px);
-      border-color: var(--border);
+      margin-bottom: clamp(56px, 9vw, 96px);
     }
 
     .nav-logo {
@@ -156,139 +71,281 @@
       text-decoration: none;
       color: var(--text);
     }
-    .nav-logo-img {
-      height: 30px;
+
+    .nav-logo img {
+      height: 26px;
       width: auto;
       filter: brightness(0) invert(1);
-      opacity: 0.92;
-      transition: opacity 0.2s;
-      flex-shrink: 0;
+      opacity: 0.85;
     }
-    .nav-logo:hover .nav-logo-img { opacity: 1; }
-    .nav-logo-text {
+
+    .nav-logo-name {
       font-family: var(--font-body);
       font-weight: 500;
-      font-size: 17px;
-      letter-spacing: -0.02em;
+      font-size: 16px;
+      letter-spacing: -0.01em;
     }
-    .nav-logo-text span { color: var(--crimson); }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: var(--space-5);
+      gap: 28px;
       list-style: none;
     }
 
     .nav-links a {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 400;
-      color: var(--text-2);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-3);
       text-decoration: none;
       transition: color 0.2s;
-      letter-spacing: 0.01em;
-      position: relative;
-      padding-bottom: 2px;
-    }
-    /* Progressive disclosure underline — scales in from left on hover */
-    .nav-links a:not(.nav-cta)::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 1px;
-      background: var(--crimson);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.25s var(--spring);
-    }
-    .nav-links a:not(.nav-cta):hover::after,
-    .nav-links a:not(.nav-cta).active::after {
-      transform: scaleX(1);
     }
 
-    .nav-links a:hover,
-    .nav-links a.active {
+    .nav-links a:hover { color: var(--text-2); }
+
+    .nav-links .nav-cta {
       color: var(--text);
+      border: 1px solid var(--border);
+      padding: 7px 16px;
+      transition: border-color 0.2s, color 0.2s;
     }
 
-    .nav-cta {
-      background: var(--crimson);
-      color: var(--text) !important;
-      padding: 8px 20px;
-      font-weight: 500 !important;
-      font-size: 13px !important;
-      transition: background 0.2s, transform 0.15s !important;
+    .nav-links .nav-cta:hover {
+      border-color: var(--border-hover);
     }
 
-    .nav-cta:hover {
-      background: var(--crimson-b) !important;
+    /* ── Hero ────────────────────────────────────────────────────── */
+    .hero {
+      margin-bottom: clamp(64px, 10vw, 96px);
     }
 
-    .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
-      background: none;
-      border: none;
-    }
-
-    .nav-hamburger span {
+    .hero-label {
       display: block;
-      width: 22px;
-      height: 1.5px;
-      background: var(--text);
-      transition: transform 0.3s, opacity 0.3s;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 24px;
     }
 
-    .nav-hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
-    .nav-hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-
-    .nav-mobile {
-      display: none;
-      position: fixed;
-      top: 64px;
-      left: 0;
-      right: 0;
-      background: rgba(9,9,11,0.98);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      padding: var(--space-4);
-      z-index: 99;
-      flex-direction: column;
-      gap: var(--space-3);
+    h1 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(48px, 9vw, 80px);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: clamp(20px, 3vw, 28px);
     }
 
-    .nav-mobile.open { display: flex; }
-
-    .nav-mobile a {
+    .hero-sub {
+      font-size: 17px;
       color: var(--text-2);
-      text-decoration: none;
-      font-size: 15px;
-      padding: var(--space-1) 0;
+      line-height: 1.75;
+      max-width: 580px;
+      margin-bottom: 36px;
+    }
+
+    /* ── Body Copy ───────────────────────────────────────────────── */
+    .section {
+      margin-bottom: clamp(52px, 8vw, 80px);
+    }
+
+    .label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(28px, 5vw, 38px);
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: var(--text-2);
+      font-size: 16px;
+      line-height: 1.85;
+      margin-bottom: 18px;
+    }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Divider ─────────────────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: clamp(48px, 8vw, 72px) 0;
+    }
+
+    /* ── Lists ───────────────────────────────────────────────────── */
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 18px;
+    }
+
+    ul li {
+      color: var(--text-2);
+      font-size: 16px;
+      line-height: 1.75;
+      padding: 10px 0;
       border-bottom: 1px solid var(--border);
     }
 
-    .nav-mobile a:last-child { border-bottom: none; }
+    ul li:first-child { border-top: 1px solid var(--border); }
 
-    /* ─── Buttons ───────────────────────────────────────────────────── */
+    /* ── Blockquote ──────────────────────────────────────────────── */
+    blockquote {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(20px, 3.5vw, 24px);
+      line-height: 1.55;
+      color: var(--text);
+      border-left: 2px solid var(--crimson);
+      padding-left: 24px;
+      margin: 0 0 14px 0;
+    }
+
+    cite {
+      display: block;
+      font-size: 13px;
+      font-style: normal;
+      color: var(--text-3);
+      padding-left: 24px;
+      margin-bottom: 4px;
+    }
+
+    /* ── Modules ─────────────────────────────────────────────────── */
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .module-item {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .module-item:first-child { border-top: 1px solid var(--border); }
+
+    .module-num {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--text-3);
+      padding-top: 2px;
+    }
+
+    .module-title {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.5;
+    }
+
+    .module-desc {
+      font-size: 14px;
+      color: var(--text-3);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ── Testimonial ─────────────────────────────────────────────── */
+    .testimonial {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: clamp(24px, 4vw, 36px);
+      margin-bottom: 2px;
+    }
+
+    .testimonial blockquote {
+      font-size: clamp(16px, 2.5vw, 19px);
+      border-left: none;
+      padding-left: 0;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-meta {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    .testimonial-name {
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    /* ── Price / CTA ─────────────────────────────────────────────── */
+    .price-block {
+      margin-bottom: 28px;
+    }
+
+    .price-main {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(52px, 8vw, 72px);
+      font-weight: 300;
+      line-height: 1;
+      color: var(--text);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .price-sub {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+    }
+
+    .includes-list {
+      margin-bottom: 28px;
+    }
+
+    .includes-list li {
+      font-size: 15px;
+    }
+
+    /* ── CTA Button ──────────────────────────────────────────────── */
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 14px 28px;
+      min-height: 48px;
+      padding: 13px 28px;
       font-family: var(--font-body);
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       text-decoration: none;
       cursor: pointer;
       border: none;
-      transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
-      position: relative;
+      transition: background 0.18s, transform 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .btn-primary {
@@ -301,2299 +358,356 @@
       transform: translateY(-1px);
     }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-2);
-      border: 1px solid var(--border);
-    }
+    .btn-primary:active { transform: translateY(0); }
 
-    .btn-ghost:hover {
-      border-color: var(--border-hover);
-      color: var(--text);
-    }
-
-    .btn-arrow::after {
-      content: '→';
-      transition: transform 0.2s ease;
-    }
-
-    .btn-arrow:hover::after {
-      transform: translateX(4px);
-    }
-
-    /* ─── Hero ──────────────────────────────────────────────────────── */
-    .hero {
-      padding-top: calc(64px + clamp(64px, 8vw, 120px));
-      padding-bottom: var(--section-py);
-      text-align: center;
-      position: relative;
-    }
-
-    .hero-label {
-      display: inline-block;
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--crimson);
-      border: 1px solid var(--crimson-glow);
-      background: var(--crimson-dim);
-      padding: 6px 16px;
-      margin-bottom: var(--space-4);
-    }
-
-    .hero h1 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(52px, 7vw, 96px);
-      line-height: 0.92;
-      letter-spacing: -0.03em; /* tighter at display sizes — research: -0.03em to -0.04em at 64-96px */
-      margin-bottom: var(--space-4);
-      color: var(--text);
-    }
-
-    .hero h1 .word { display: inline-block; opacity: 0; }
-
-    .hero-cycling-word {
-      color: var(--crimson);
-      display: inline;
-      transition: opacity 0.35s ease;
-    }
-
-    .hero-cycling-word.fading {
-      opacity: 0;
-    }
-
-    .hero-sub {
-      max-width: 600px;
-      margin: 0 auto var(--space-6);
-      font-size: 16px;
-      color: var(--text-2);
-      line-height: 1.75;
-    }
-
-    .hero-ctas {
+    .btn-full {
       display: flex;
-      gap: var(--space-3);
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: var(--space-10);
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: var(--space-6);
-      justify-content: center;
-      flex-wrap: wrap;
-      padding-top: var(--space-6);
-      border-top: 1px solid var(--border);
-    }
-
-    .hero-stat {
-      text-align: center;
-    }
-
-    .hero-stat-value {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: clamp(32px, 4vw, 48px);
-      font-weight: 300;
-      color: var(--text);
-      line-height: 1;
-      display: block;
-    }
-
-    .hero-stat-label {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      margin-top: 4px;
-      display: block;
-    }
-
-    /* ─── Problem Section ───────────────────────────────────────────── */
-    .section-problem {
-      padding: var(--section-py) 0;
-    }
-
-    .problem-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-10);
-      align-items: start;
-    }
-
-    .problem-left h2 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(36px, 5vw, 64px);
-      line-height: 1.0;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: var(--space-4);
-    }
-
-    .problem-left p {
-      color: var(--text-2);
-      font-size: 16px;
-    }
-
-    .problem-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-
-    .problem-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: var(--space-2);
-      padding: var(--space-3);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      font-size: 15px;
-      color: var(--text-2);
-      line-height: 1.6;
-    }
-
-    .problem-list li::before {
-      content: '×';
-      color: var(--crimson);
-      font-size: 18px;
-      font-weight: 400;
-      flex-shrink: 0;
-      line-height: 1.4;
-    }
-
-    /* ─── Shift Section ─────────────────────────────────────────────── */
-    .section-shift {
-      padding: var(--section-py) 0;
-      text-align: center;
-    }
-
-    .shift-quote {
-      max-width: 840px;
-      margin: 0 auto var(--space-10);
-    }
-
-    .shift-quote blockquote {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(28px, 3.5vw, 44px);
-      line-height: 1.3;
-      color: var(--text);
-      border-left: 3px solid var(--crimson);
-      padding-left: var(--space-4);
-      text-align: left;
-      margin-bottom: var(--space-4);
-    }
-
-    .shift-quote cite {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      font-style: normal;
-    }
-
-    .pillars-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-3);
-    }
-
-    .pillar-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: var(--space-5);
-      text-align: left;
-      transition: background 0.25s, border-color 0.25s, transform 0.3s var(--spring), box-shadow 0.3s var(--spring);
-    }
-
-    @media (hover: hover) {
-      .pillar-card:hover {
-        background: rgba(24,24,27,0.95);
-        border-color: var(--border-hover);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 36px rgba(0,0,0,0.45);
-      }
-    }
-
-    .pillar-number {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 48px;
-      font-weight: 300;
-      color: rgba(225,29,72,0.30);
-      line-height: 1;
-      margin-bottom: var(--space-2);
-      display: block;
-    }
-
-    .pillar-card h3 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 24px;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: var(--space-2);
-    }
-
-    .pillar-card p {
-      font-size: 15px;
-      color: var(--text-2);
-      line-height: 1.75;
-    }
-
-    /* ─── Before/After Table ────────────────────────────────────────── */
-    .section-comparison {
-      padding: var(--section-py) 0;
-    }
-
-    .comparison-table {
       width: 100%;
-      border-collapse: collapse;
-      border: 1px solid var(--border);
-      background: var(--surface);
-    }
-
-    .comparison-table th {
-      padding: var(--space-3) var(--space-4);
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-3);
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
-
-    .comparison-table th:first-child { border-right: 1px solid var(--border); }
-    .comparison-table th.highlight { color: var(--crimson); background: var(--crimson-dim); }
-
-    .comparison-table td {
-      padding: var(--space-3) var(--space-4);
-      font-size: 14px;
-      color: var(--text-2);
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-
-    .comparison-table td:first-child {
-      border-right: 1px solid var(--border);
-    }
-
-    .comparison-table td.highlight {
-      color: var(--text);
-      background: var(--crimson-dim);
-    }
-
-    .comparison-table tr:last-child td { border-bottom: none; }
-
-    /* ─── What's Inside ─────────────────────────────────────────────── */
-    .section-inside {
-      padding: var(--section-py) 0;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: var(--space-10);
-    }
-
-    .section-header h2 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(36px, 5vw, 64px);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: var(--space-3);
-    }
-
-    .section-header p {
-      max-width: 520px;
-      margin: 0 auto;
-      color: var(--text-2);
-      font-size: 16px;
-    }
-
-    .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-3);
-    }
-
-    .bento-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: var(--space-5);
-      transition: background 0.25s, border-color 0.25s, transform 0.3s var(--spring), box-shadow 0.3s var(--spring);
-      position: relative;
-      overflow: hidden;
-    }
-
-    @media (hover: hover) {
-      .bento-card:hover {
-        background: rgba(24,24,27,0.95);
-        border-color: var(--border-hover);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 36px rgba(0,0,0,0.45);
-      }
-    }
-
-    .bento-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--crimson);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-
-    .bento-card:hover::before { opacity: 1; }
-
-    .module-tag {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--crimson);
-      margin-bottom: var(--space-2);
-      display: block;
-    }
-
-    .bento-card h3 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 22px;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: var(--space-2);
-      line-height: 1.2;
-    }
-
-    .bento-card p {
-      font-size: 14px;
-      color: var(--text-2);
-      line-height: 1.75;
-    }
-
-    /* ─── Testimonials ──────────────────────────────────────────────── */
-    .section-testimonials {
-      padding: var(--section-py) 0;
-    }
-
-    .testimonial-featured {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      padding: var(--space-8);
-      margin-bottom: var(--space-6);
-      position: relative;
-    }
-
-    .testimonial-featured::before {
-      content: '"';
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 120px;
-      line-height: 1;
-      color: rgba(225,29,72,0.22);
-      position: absolute;
-      top: -16px;
-      left: var(--space-5);
-    }
-
-    .testimonial-featured blockquote {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(20px, 2.5vw, 28px);
-      line-height: 1.4;
-      color: var(--text);
-      margin-bottom: var(--space-4);
-      position: relative;
-      z-index: 1;
-    }
-
-    .testimonial-meta {
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-
-    .testimonial-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--crimson-dim);
-      border: 1px solid var(--crimson-glow);
-      display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--crimson);
-      flex-shrink: 0;
     }
 
-    .testimonial-name {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .testimonial-title {
-      font-size: 12px;
-      color: var(--text-3);
-    }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--space-3);
-    }
-
-    .testimonial-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: var(--space-5);
-      transition: background 0.25s, border-color 0.25s, transform 0.3s var(--spring), box-shadow 0.3s var(--spring);
-    }
-
-    @media (hover: hover) {
-      .testimonial-card:hover {
-        background: rgba(24,24,27,0.95);
-        border-color: var(--border-hover);
-        transform: translateY(-3px);
-        box-shadow: 0 10px 36px rgba(0,0,0,0.45);
-      }
-    }
-
-    .testimonial-card blockquote {
-      font-size: 15px;
-      color: var(--text-2);
-      line-height: 1.7;
-      margin-bottom: var(--space-3);
-      font-style: italic;
-    }
-
-    /* ─── Moat / About ──────────────────────────────────────────────── */
-    .section-moat {
-      padding: var(--section-py) 0;
-    }
-
-    .moat-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-10);
-      align-items: center;
-    }
-
-    .moat-left h2 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(36px, 5vw, 64px);
-      line-height: 1.0;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: var(--space-4);
-    }
-
-    .moat-left p {
-      color: var(--text-2);
-      font-size: 15px;
-      margin-bottom: var(--space-4);
-    }
-
-    .moat-pullquote {
-      border-left: 3px solid var(--crimson);
-      padding-left: var(--space-4);
-      margin: var(--space-6) 0;
-    }
-
-    .moat-pullquote p {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 20px;
-      color: var(--text);
-      line-height: 1.5;
-    }
-
-    .credentials-stack {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-    }
-
-    .credential-item {
-      display: flex;
-      align-items: center;
-      gap: var(--space-3);
-      padding: var(--space-3) var(--space-4);
-      border: 1px solid var(--border);
-      background: var(--surface);
-      transition: background 0.25s, border-color 0.25s, transform 0.3s var(--spring), box-shadow 0.3s var(--spring);
-    }
-
-    @media (hover: hover) {
-      .credential-item:hover {
-        background: rgba(24,24,27,0.95);
-        border-color: var(--border-hover);
-        transform: translateY(-2px);
-        box-shadow: 0 6px 24px rgba(0,0,0,0.35);
-      }
-    }
-
-    .credential-icon {
-      width: 36px;
-      height: 36px;
-      background: var(--crimson-dim);
-      border: 1px solid var(--crimson-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--crimson);
-      flex-shrink: 0;
-    }
-
-    .credential-text strong {
+    /* ── Guarantee ───────────────────────────────────────────────── */
+    .guarantee {
       font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      display: block;
-    }
-
-    .credential-text span {
-      font-size: 12px;
-      color: var(--text-3);
-    }
-
-    /* ─── Signal/Noise ──────────────────────────────────────────────── */
-    .section-newsletter {
-      padding: var(--section-py) 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .newsletter-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-10);
-      align-items: start;
-    }
-
-    .newsletter-left h2 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(32px, 4vw, 52px);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: var(--space-3);
-    }
-
-    .newsletter-left p {
-      color: var(--text-2);
-      font-size: 15px;
-      margin-bottom: var(--space-5);
-    }
-
-    .newsletter-form {
-      display: flex;
-      gap: var(--space-2);
-    }
-
-    .newsletter-input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 14px;
-      padding: 16px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .newsletter-input:focus {
-      border-color: var(--crimson);
-    }
-
-    .newsletter-input::placeholder {
-      color: var(--text-3);
-    }
-
-    .issue-cards {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-    }
-
-    .issue-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: var(--space-3) var(--space-4);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      text-decoration: none;
-      transition: background 0.2s, border-color 0.2s;
-    }
-
-    .issue-card:hover {
-      background: rgba(24,24,27,0.95);
-      border-color: var(--border-hover);
-    }
-
-    .issue-title {
-      font-size: 14px;
-      color: var(--text);
-      font-weight: 400;
-    }
-
-    .issue-meta {
-      font-size: 11px;
-      color: var(--text-3);
-      letter-spacing: 0.08em;
-    }
-
-    /* ─── Not For ───────────────────────────────────────────────────── */
-    .section-not-for {
-      padding: var(--section-py) 0;
-    }
-
-    .not-for-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--space-2);
-      margin-bottom: var(--space-8);
-    }
-
-    .not-for-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: var(--space-4);
-      display: flex;
-      gap: var(--space-3);
-      align-items: flex-start;
-    }
-
-    .not-for-card::before {
-      content: '×';
-      color: var(--crimson);
-      font-size: 18px;
-      flex-shrink: 0;
-      line-height: 1.4;
-    }
-
-    .not-for-card p {
-      font-size: 14px;
-      color: var(--text-3);
-      line-height: 1.7;
-    }
-
-    .for-reframe {
-      background: var(--surface);
-      border: 1px solid var(--crimson-glow);
-      padding: var(--space-6);
-      text-align: center;
-    }
-
-    .for-reframe h3 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 28px;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: var(--space-2);
-    }
-
-    .for-reframe p {
-      color: var(--text-2);
-      font-size: 15px;
-    }
-
-    /* ─── Offer Section ─────────────────────────────────────────────── */
-    .section-offer {
-      padding: var(--section-py) 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .offer-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-10);
-      align-items: start;
-    }
-
-    .offer-stack h2 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(36px, 4.5vw, 56px);
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: var(--space-6);
-    }
-
-    .offer-items {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-    }
-
-    .offer-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: var(--space-3) var(--space-4);
-      border: 1px solid var(--border);
-      background: var(--bg);
-    }
-
-    .offer-item-left strong {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      display: block;
-    }
-
-    .offer-item-left span {
-      font-size: 12px;
-      color: var(--text-3);
-    }
-
-    .offer-item-value {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 18px;
-      color: var(--text-3);
-      text-decoration: line-through;
-    }
-
-    .offer-total {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: var(--space-3) var(--space-4);
-      border: 1px solid var(--border);
-      background: var(--bg);
-      border-top: 2px solid var(--border);
-    }
-
-    .offer-total strong {
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-3);
-    }
-
-    .offer-total-value {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 24px;
-      color: var(--text-3);
-      text-decoration: line-through;
-    }
-
-    .offer-cta-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      padding: var(--space-8);
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--space-4);
-    }
-
-    .offer-price {
-      display: flex;
-      align-items: baseline;
-      gap: var(--space-2);
-    }
-
-    .offer-price-main {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-size: 72px;
-      font-weight: 300;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .offer-price-sub {
-      font-size: 14px;
-      color: var(--text-3);
-    }
-
-    .offer-cta-features {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-      width: 100%;
-    }
-
-    .offer-cta-features li {
-      font-size: 13px;
-      color: var(--text-2);
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-
-    .offer-cta-features li::before {
-      content: '✓';
-      color: var(--crimson);
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-
-    .offer-cta-box .btn {
-      width: 100%;
-      justify-content: center;
-    }
-
-    .offer-fine {
-      font-size: 11px;
-      color: var(--text-3);
-      text-align: center;
-      width: 100%;
-    }
-
-    /* ─── Coaching Bridge ───────────────────────────────────────────── */
-    .section-coaching-bridge {
-      padding: var(--section-py) 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .coaching-bridge-inner {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-10);
-      align-items: center;
-      padding: var(--space-8);
-      background: rgba(17,17,19,0.96);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(28px);
-    }
-
-    .coaching-bridge-left h2 {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(28px, 3.5vw, 44px);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: var(--space-3);
-    }
-
-    .coaching-bridge-left p {
-      color: var(--text-2);
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    .coaching-bridge-right {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-3);
-      align-items: flex-start;
-    }
-
-    .coaching-bridge-right p {
-      font-size: 14px;
       color: var(--text-3);
       line-height: 1.65;
-    }
-
-    @media (max-width: 768px) {
-      .coaching-bridge-inner { grid-template-columns: 1fr; }
-      .coaching-bridge-right { align-items: stretch; }
-      .coaching-bridge-right .btn { text-align: center; justify-content: center; }
-    }
-
-    /* ─── FAQ ───────────────────────────────────────────────────────── */
-    .section-faq {
-      padding: var(--section-py) 0;
-    }
-
-    .faq-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-2);
-      max-width: 760px;
-      margin: 0 auto;
-    }
-
-    .faq-item {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      overflow: hidden;
-    }
-
-    .faq-trigger {
-      width: 100%;
-      background: none;
-      border: none;
-      padding: var(--space-4) var(--space-5);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      text-align: left;
-      gap: var(--space-4);
-      transition: background 0.2s;
-    }
-
-    .faq-trigger:hover {
-      background: rgba(24,24,27,0.95);
-    }
-
-    .faq-question {
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text);
-      line-height: 1.5;
-    }
-
-    .faq-icon {
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      color: var(--text-2);
-      transition: transform 0.3s, background 0.2s;
-    }
-
-    .faq-trigger[aria-expanded="true"] .faq-icon {
-      transform: rotate(45deg);
-      background: var(--crimson-dim);
-      border-color: var(--crimson-glow);
-      color: var(--crimson);
-    }
-
-    .faq-body {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease;
-    }
-
-    .faq-body.open {
-      max-height: 400px;
-    }
-
-    .faq-answer {
-      padding: var(--space-3) var(--space-5) var(--space-4);
-      font-size: 15px;
-      color: var(--text-2);
-      line-height: 1.8;
-      border-top: 1px solid var(--border);
-    }
-
-    /* ─── Logo utility ──────────────────────────────────────────────── */
-    /* Invert black logo to white on dark bg */
-    .logo-white {
-      filter: brightness(0) invert(1);
-    }
-
-    /* Hero ghost watermark — large brand presence behind headline */
-    .hero-logo-watermark {
-      position: absolute;
-      top: 50%;
-      right: clamp(-80px, -4vw, 0px);
-      transform: translateY(-60%);
-      width: clamp(280px, 38vw, 520px);
-      height: clamp(280px, 38vw, 520px);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.055; /* Framer ghost pattern — visible enough to brand, subtle enough to not fight copy */
-    }
-    .hero-logo-watermark img {
-      width: 100%; height: 100%;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-    }
-    @media (max-width: 768px) {
-      .hero-logo-watermark { display: none; } /* On mobile, hero is narrow — watermark would overwhelm copy */
-    }
-
-    /* Final CTA logo anchor */
-    .final-cta-logo {
-      height: clamp(40px, 5vw, 56px);
-      width: auto;
-      display: block;
-      margin: 0 auto clamp(28px, 4vw, 40px);
-      filter: brightness(0) invert(1);
-      opacity: 0.55;
-      transition: opacity 0.25s;
-    }
-    .final-cta-logo:hover { opacity: 0.8; }
-
-    /* Footer logo */
-    .footer-logo-img {
-      height: 26px;
-      width: auto;
-      filter: brightness(0) invert(1);
-      opacity: 0.5;
-      transition: opacity 0.2s;
-      vertical-align: middle;
-    }
-    .footer-logo:hover .footer-logo-img { opacity: 0.8; }
-
-    /* ─── Final CTA ─────────────────────────────────────────────────── */
-    .section-final-cta {
-      padding: var(--section-py) 0;
-      text-align: center;
-      position: relative;
-    }
-
-    .section-final-cta::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, var(--crimson-glow) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .section-final-cta .container { position: relative; z-index: 1; }
-
-    .final-cta-h2 {
-      font-family: var(--font-display);
+      margin-top: 16px;
       font-style: italic;
-      font-weight: 300;
-      font-size: clamp(32px, 5vw, 64px);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      max-width: 760px;
-      margin: 0 auto var(--space-4);
     }
 
-    .final-cta-sub {
-      max-width: 520px;
-      margin: 0 auto var(--space-6);
-      color: var(--text-2);
-      font-size: 16px;
+    /* ── Not For ─────────────────────────────────────────────────── */
+    .not-for-list li {
+      color: var(--text-3);
     }
 
-    .final-cta-buttons {
-      display: flex;
-      gap: var(--space-3);
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    /* ─── Footer ────────────────────────────────────────────────────── */
+    /* ── Footer ──────────────────────────────────────────────────── */
     .footer {
+      margin-top: clamp(72px, 10vw, 96px);
+      padding-top: 28px;
       border-top: 1px solid var(--border);
-      padding: var(--space-8) 0;
     }
 
-    .footer-inner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: var(--space-4);
+    .footer-questions {
+      font-size: 15px;
+      color: var(--text-2);
+      margin-bottom: 20px;
     }
 
-    .footer-logo {
-      font-family: var(--font-body);
-      font-weight: 500;
-      font-size: 16px;
+    .footer-questions a {
       color: var(--text);
-      text-decoration: none;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
-    .footer-logo span { color: var(--crimson); }
-
-    .footer-links {
-      display: flex;
-      gap: var(--space-5);
-      list-style: none;
-    }
-
-    .footer-links a {
+    .footer-meta {
       font-size: 12px;
       color: var(--text-3);
-      text-decoration: none;
-      letter-spacing: 0.06em;
-      transition: color 0.2s;
+      letter-spacing: 0.04em;
     }
 
-    .footer-links a:hover { color: var(--text-2); }
-
-    .footer-copy {
-      font-size: 11px;
+    .footer-meta a {
       color: var(--text-3);
-      letter-spacing: 0.06em;
+      text-decoration: none;
     }
 
-    /* ─── Sticky Mobile CTA ─────────────────────────────────────────── */
-    .sticky-mobile-cta {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 90;
-      background: rgba(9,9,11,0.97);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid var(--border);
-      padding: var(--space-2) var(--space-4);
-      transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    .footer-meta a:hover { color: var(--text-2); }
+
+    /* ── Scroll reveal ───────────────────────────────────────────── */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
-    .sticky-mobile-cta.visible {
+    [data-reveal].visible {
+      opacity: 1;
       transform: translateY(0);
     }
 
-    .sticky-mobile-cta .btn {
-      width: 100%;
-      justify-content: center;
-    }
+    /* ── Mobile ──────────────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .nav-links .nav-coaching { display: none; }
 
-    /* ─── Responsive ────────────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .nav-hamburger { display: flex; }
-
-      .problem-grid,
-      .pillars-grid,
-      .moat-grid,
-      .newsletter-grid,
-      .offer-grid,
-      .testimonials-grid,
-      .not-for-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .bento-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-stats {
-        gap: var(--space-4);
-      }
-
-      .hero-ctas {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .sticky-mobile-cta { display: block; }
-
-      .comparison-table {
-        font-size: 12px;
-      }
-
-      .comparison-table th,
-      .comparison-table td {
-        padding: var(--space-2) var(--space-3);
-      }
-
-      .offer-cta-box {
-        padding: var(--space-5);
-      }
-
-      .testimonial-featured {
-        padding: var(--space-5);
-      }
-    }
-
-    /* ─── Readability System ────────────────────────────────────────── */
-
-    /* Fixed vignette: darkens the terrain at edges so center content pops */
-    #vignette {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% 40%, transparent 20%, rgba(9,9,11,0.72) 100%);
-    }
-
-    /* Glass panels: all bordered surface elements get blur so
-       terrain lines are softened behind content, not competing with text */
-    .pillar-card,
-    .bento-card,
-    .testimonial-card,
-    .testimonial-featured,
-    .offer-cta-box,
-    .offer-item,
-    .offer-total,
-    .faq-item,
-    .not-for-card,
-    .for-reframe,
-    .issue-card,
-    .comparison-table,
-    .credential-item {
-      background: rgba(17,17,19,0.94);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-    }
-
-    /* Headings floating directly over terrain */
-    .hero h1,
-    .section-header h2,
-    .problem-left h2,
-    .offer-stack h2,
-    .final-cta-h2,
-    .moat-left h2,
-    .newsletter-left h2,
-    .shift-quote blockquote {
-      text-shadow: 0 2px 24px rgba(0,0,0,1), 0 0 60px rgba(0,0,0,0.9);
-    }
-
-    /* Body text floating directly over terrain */
-    .problem-left p,
-    .moat-left p,
-    .final-cta-sub,
-    .hero-sub,
-    .newsletter-left p,
-    .section-header p,
-    .shift-quote cite,
-    .hero-stat-value,
-    .hero-stat-label {
-      text-shadow: 0 1px 16px rgba(0,0,0,1), 0 0 40px rgba(0,0,0,0.8);
-    }
-
-    /* Section label eyebrows */
-    .section-label {
-      text-shadow: 0 1px 12px rgba(0,0,0,0.9);
-    }
-
-    /* Newsletter input glass */
-    .newsletter-input {
-      background: rgba(17,17,19,0.94);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-    }
-
-    /* Moat pullquote glass panel */
-    .moat-pullquote {
-      background: rgba(17,17,19,0.88);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      padding: var(--space-4);
-      border-left: 3px solid var(--crimson);
-    }
-
-    /* Credential items: glass only (border/padding already in base) */
-    .credential-item {
-      background: rgba(17,17,19,0.94);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-    }
-
-    /* Footer above canvas */
-    .footer {
-      position: relative;
-      z-index: 2;
+      .btn { display: flex; width: 100%; justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Scroll Progress Bar -->
   <div id="scroll-progress" role="progressbar" aria-hidden="true"></div>
 
-  <!-- Ambient Orb -->
-  <div id="ambient-orb" aria-hidden="true"></div>
+  <div class="page">
 
-  <!-- Terrain Canvas -->
-  <canvas id="terrain-canvas" aria-hidden="true"></canvas>
+    <!-- Nav -->
+    <nav class="nav">
+      <a href="/" class="nav-logo">
+        <img src="/logo.png" alt="Attune" />
+        <span class="nav-logo-name">Attune</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/coaching" class="nav-coaching">1:1 Coaching</a></li>
+        <li><a href="#offer" class="nav-cta">Get Foundations</a></li>
+      </ul>
+    </nav>
 
-  <!-- Vignette overlay: darkens terrain edges, content stays crisp -->
-  <div id="vignette" aria-hidden="true"></div>
+    <!-- Hero -->
+    <div class="hero">
+      <span class="hero-label">Foundations &middot; Attune</span>
 
-  <!-- ── Navigation ──────────────────────────────────────────────── -->
-  <nav class="nav" id="main-nav" role="navigation" aria-label="Main navigation">
-    <a href="#hero" class="nav-logo" aria-label="Attune home">
-      <img src="/logo.png" class="nav-logo-img" alt="" aria-hidden="true" />
-      <span class="nav-logo-text">Attune</span>
-    </a>
-    <ul class="nav-links" role="list">
-      <li><a href="#shift" class="nav-link" data-section="shift">Method</a></li>
-      <li><a href="#testimonials" class="nav-link" data-section="testimonials">Results</a></li>
-      <li><a href="#moat" class="nav-link" data-section="moat">About</a></li>
-      <li><a href="#newsletter" class="nav-link" data-section="newsletter">Newsletter</a></li>
-      <li><a href="/coaching" class="nav-link">1-on-1 Coaching</a></li>
-      <li><a href="#offer" class="btn btn-primary nav-cta magnetic-btn">Get Foundations</a></li>
-    </ul>
-    <button class="nav-hamburger" id="hamburger" aria-expanded="false" aria-label="Toggle menu">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
+      <h1>Stop training<br>the pattern.<br>Train the perception.</h1>
 
-  <!-- Mobile Nav -->
-  <div class="nav-mobile" id="mobile-nav" role="navigation" aria-label="Mobile navigation">
-    <a href="#shift">Method</a>
-    <a href="#testimonials">Results</a>
-    <a href="#moat">About</a>
-    <a href="#newsletter">Newsletter</a>
-    <a href="/coaching">1-on-1 Coaching</a>
-    <a href="#offer" class="btn btn-primary" style="text-align:center;justify-content:center;">Get Foundations — $197</a>
-  </div>
+      <p class="hero-sub">
+        You already know the drill isn't the problem. Your athlete can execute it in training. The problem shows up somewhere between the locker room and the field — something in the environment shifts, and so does the athlete. That gap has a name. This is where you learn it.
+      </p>
 
-  <main>
+      <a href="#offer" class="btn btn-primary">Begin Foundations &rarr;</a>
+    </div>
 
-    <!-- ── Hero ─────────────────────────────────────────────────────── -->
-    <section class="hero" id="hero">
-      <!-- Ghost watermark — brand presence without competing with copy -->
-      <div class="hero-logo-watermark" aria-hidden="true">
-        <img src="/logo.png" alt="" />
-      </div>
-      <div class="container">
-        <div class="reveal">
-          <span class="hero-label">Foundations · Attune</span>
-        </div>
+    <hr class="divider" />
 
-        <h1>
-          <span class="word">Stop</span>
-          <span class="word"> training</span>
-          <span class="word"> the</span>
-          <span class="word"> pattern.</span>
-          <br>
-          <span class="word">Train</span>
-          <span class="word"> the</span>
-          <span id="cycling-word" class="hero-cycling-word" aria-live="polite">perception.</span>
-        </h1>
+    <!-- Who this is for -->
+    <div class="section" data-reveal>
+      <span class="label">Who this is for</span>
+      <p>Coaches, athletes, and creators who are having some success — but something is still off. They have read the books, done the programs, tried everything they've been told to try — and still can't bridge the gap between what they know and what they're producing.</p>
+      <p>You suspect the method is broken. Not you. The method.</p>
+      <p>If you want someone to hand you a drill library with no framework behind it, this isn't it. If you are ready to understand why skill transfers — or doesn't — this is exactly that.</p>
+    </div>
 
-        <p class="hero-sub reveal reveal-delay-2">
-          I didn't discover ecological dynamics. I lived it for a decade before I had a name for it. That's the difference between someone who studied the theory and someone who forged skill in the field. For coaches and athletes who've drilled everything right and still lose it when it counts.
-        </p>
+    <hr class="divider" />
 
-        <div class="hero-ctas reveal reveal-delay-3">
-          <a href="#offer" class="btn btn-primary btn-arrow magnetic-btn">Begin Foundations</a>
-          <a href="#newsletter" class="btn btn-ghost magnetic-btn">Read Signal/Noise first →</a>
-        </div>
+    <!-- The Problem -->
+    <div class="section" data-reveal>
+      <span class="label">The Problem</span>
+      <h2>You recognize this.</h2>
 
-        <div class="hero-stats reveal reveal-delay-4">
-          <div class="hero-stat">
-            <span class="hero-stat-value" data-countup="2" data-suffix="×">0</span>
-            <span class="hero-stat-label">NCAA National Championships</span>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-value" data-countup="6" data-suffix="×">0</span>
-            <span class="hero-stat-label">All-American Honors</span>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-value" data-countup="500" data-suffix="+">0</span>
-            <span class="hero-stat-label">Students Trained</span>
-          </div>
-          <div class="hero-stat">
-            <span class="hero-stat-value" data-countup="5" data-suffix=" yrs">0</span>
-            <span class="hero-stat-label">Deep Study: Gibson, Bernstein, Davids</span>
-          </div>
-        </div>
-      </div>
-    </section>
+      <ul>
+        <li>Tuesday practice: perfect. Saturday game — that person wasn't there.</li>
+        <li>Watched the film 40 times. Mechanics clean. Competition arrives — different athlete.</li>
+        <li>Hired the coach. New drills. Same plateau. Six months later, nothing's changed.</li>
+        <li>The read isn't there. No one can explain why. You've tried everything they've told you to try.</li>
+        <li>Something doesn't add up about how skill is being built. You feel it. You just can't name it yet.</li>
+      </ul>
 
-    <!-- ── Problem Section ──────────────────────────────────────────── -->
-    <section class="section-problem" id="problem" aria-labelledby="problem-heading">
-      <div class="container">
-        <div class="problem-grid">
-          <div class="problem-left reveal">
-            <span class="section-label">The Problem</span>
-            <h2 id="problem-heading">You recognize this.</h2>
-            <p>Every coach. Every athlete. Every practitioner who's felt the gap between training and competition knows this feeling. You just didn't have a name for it yet.</p>
-          </div>
-          <div class="problem-right reveal reveal-delay-2">
-            <ul class="problem-list" role="list">
-              <li>Tuesday practice: perfect. Saturday game — that person wasn't there.</li>
-              <li>Watched the film 40 times. Mechanics clean. Competition arrives — different athlete.</li>
-              <li>Hired the coach. New drills. Same plateau. Six months later, nothing's changed.</li>
-              <li>The read isn't there. No one can explain why. You've tried everything they've told you to try.</li>
-              <li>Something is fundamentally broken about how skill is being taught. You can't name it yet.</li>
-            </ul>
+      <p>Every coach. Every athlete who's felt the gap between training and competition knows this feeling. The problem isn't the athlete. The problem is the environment.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- The Shift -->
+    <div class="section" data-reveal>
+      <span class="label">The Framework</span>
+
+      <blockquote>
+        Every rep builds skill for the environment it was built in. That's not a flaw in your training. That's just how perception works. The environment was always the teacher. Most people were just in the wrong classroom.
+      </blockquote>
+      <cite>— The Attune Framework</cite>
+
+      <p style="margin-top:24px;">When the training environment mirrors the performance environment, the perception transfers. Athletes start reading the play two steps ahead — not because you told them to, but because the conditions required it.</p>
+
+      <p>You stop prescribing. You start designing. Fewer cues from you. More autonomous responses from them.</p>
+
+      <p>Tuesday practice and Saturday competition start to look like the same athlete. Not because they tried harder — because they trained in the right environment.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Inside the Course -->
+    <div class="section" data-reveal>
+      <span class="label">The Curriculum</span>
+      <h2>What's inside Foundations</h2>
+      <p>8 sessions that replace the broken model with one that explains why skill transfers — or doesn't.</p>
+
+      <div class="module-list" style="margin-top:28px;">
+        <div class="module-item">
+          <span class="module-num">01</span>
+          <div>
+            <div class="module-title">Why Your Training Environment is Lying to You</div>
+            <p class="module-desc">Before you change a single drill, you'll understand why your current ones are producing athletes who can't transfer. Module 1 shifts how you see — not what you do.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ── The Shift ─────────────────────────────────────────────────── -->
-    <section class="section-shift" id="shift" aria-labelledby="shift-heading">
-      <div class="container">
-        <span class="section-label reveal">The Shift</span>
-        <div class="shift-quote reveal reveal-delay-1">
-          <blockquote>
-            Every rep built in the wrong environment builds skill that works in that environment. And nowhere else. The environment was always the teacher. Most people were just in the wrong classroom.
-          </blockquote>
-          <cite>— The Attune Framework</cite>
-        </div>
-
-        <div class="pillars-grid" role="list">
-          <div class="pillar-card reveal reveal-delay-1" role="listitem">
-            <span class="pillar-number">01</span>
-            <h3>You stop prescribing</h3>
-            <p>You become the coach who designs the environment and watches the movement emerge. Fewer cues from you. More autonomous responses from them. The athletes take responsibility for the solution.</p>
-          </div>
-          <div class="pillar-card reveal reveal-delay-2" role="listitem">
-            <span class="pillar-number">02</span>
-            <h3>Your athletes read earlier</h3>
-            <p>When the training environment mirrors the performance environment, the perception transfers. Athletes start reading the play two steps ahead — not because you told them to, but because the conditions required it.</p>
-          </div>
-          <div class="pillar-card reveal reveal-delay-3" role="listitem">
-            <span class="pillar-number">03</span>
-            <h3>The gap closes</h3>
-            <p>Tuesday practice and Saturday competition start to look like the same athlete. Not because they tried harder — because they trained in the right environment. That's the whole model.</p>
+        <div class="module-item">
+          <span class="module-num">02</span>
+          <div>
+            <div class="module-title">Affordances &amp; the Information Athletes Actually Use</div>
+            <p class="module-desc">Gibson's core insight translated for practitioners. What are your athletes perceiving? Is it the right information? The answer changes everything about how you design sessions.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ── Before / After ───────────────────────────────────────────── -->
-    <section class="section-comparison" id="comparison" aria-labelledby="comparison-heading">
-      <div class="container">
-        <div class="section-header reveal">
-          <span class="section-label">Two Paradigms</span>
-          <h2 id="comparison-heading">The old model vs. the Attune model</h2>
-        </div>
-        <div class="reveal reveal-delay-1" style="overflow-x: auto;">
-          <table class="comparison-table" role="table" aria-label="Paradigm comparison">
-            <thead>
-              <tr>
-                <th scope="col">Old Paradigm</th>
-                <th scope="col" class="highlight">Attune Paradigm</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Prescribe the movement. Correct the error.</td>
-                <td class="highlight">Design the environment. Let the movement emerge.</td>
-              </tr>
-              <tr>
-                <td>Drill until it's automatic. Repeat perfectly.</td>
-                <td class="highlight">Vary the constraints. Build adaptable perception.</td>
-              </tr>
-              <tr>
-                <td>Isolate the skill from competition context.</td>
-                <td class="highlight">Make training representative of performance demands.</td>
-              </tr>
-              <tr>
-                <td>Teach the tactic. Prescribe the read.</td>
-                <td class="highlight">Create conditions where the read has to happen.</td>
-              </tr>
-              <tr>
-                <td>Measure repetitions. Count the reps.</td>
-                <td class="highlight">Measure coupling. Count the right adaptations.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── What's Inside ─────────────────────────────────────────────── -->
-    <section class="section-inside" id="inside" aria-labelledby="inside-heading">
-      <div class="container">
-        <div class="section-header reveal">
-          <span class="section-label">The Curriculum</span>
-          <h2 id="inside-heading">What's inside Foundations</h2>
-          <p>8 sessions that replace the broken model with one that explains why skill transfers — or doesn't.</p>
-        </div>
-        <div class="bento-grid" role="list">
-          <div class="bento-card reveal reveal-delay-1" role="listitem">
-            <span class="module-tag">Module 1</span>
-            <h3>Why Your Training Environment is Lying to You</h3>
-            <p>The first session shifts how you see. Not what you do — how you perceive. Before you change a single drill, you'll understand why your current ones are producing athletes who can't transfer.</p>
-          </div>
-          <div class="bento-card reveal reveal-delay-2" role="listitem">
-            <span class="module-tag">Module 2</span>
-            <h3>Affordances &amp; the Information Athletes Actually Use</h3>
-            <p>Gibson's core insight translated into practice. What are your athletes perceiving? And is it the right information? The answer changes everything about how you design sessions.</p>
-          </div>
-          <div class="bento-card reveal reveal-delay-3" role="listitem">
-            <span class="module-tag">Module 3</span>
-            <h3>Constraints as the Language of Coaching</h3>
-            <p>Stop prescribing. Start designing. The three constraint categories and how to manipulate each one to create the conditions where the solution has to emerge from the athlete.</p>
-          </div>
-          <div class="bento-card reveal reveal-delay-1" role="listitem">
-            <span class="module-tag">Module 4</span>
-            <h3>Designing for Transfer</h3>
-            <p>By Module 4, you'll design differently. What makes a practice environment representative? Why do athletes fall apart in competition? The answer is simpler — and more actionable — than you think.</p>
-          </div>
-          <div class="bento-card reveal reveal-delay-2" role="listitem">
-            <span class="module-tag">Modules 5–7</span>
-            <h3>Applying the Framework Across Domains</h3>
-            <p>From invasion sports to individual performance, from athletics to business decision-making. Ecological dynamics isn't a sports model. It's a perception-action model. It applies everywhere.</p>
-          </div>
-          <div class="bento-card reveal reveal-delay-3" role="listitem">
-            <span class="module-tag">Module 8</span>
-            <h3>The Practitioner's Toolkit</h3>
-            <p>A complete constraint design system you'll use every session for the next year. Paired with the Foundations Workbook — not a PDF, a live constraint design tool.</p>
+        <div class="module-item">
+          <span class="module-num">03</span>
+          <div>
+            <div class="module-title">Constraints as the Language of Coaching</div>
+            <p class="module-desc">Stop prescribing. Start designing. The three constraint categories — and how to manipulate each one to create conditions where the solution has to emerge from the athlete.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ── Testimonials ───────────────────────────────────────────────── -->
-    <section class="section-testimonials" id="testimonials" aria-labelledby="testimonials-heading">
-      <div class="container">
-        <div class="section-header reveal">
-          <span class="section-label">Results</span>
-          <h2 id="testimonials-heading">What students say</h2>
-        </div>
-
-        <div class="testimonial-featured reveal reveal-delay-1">
-          <blockquote>
-            "One drill with manipulation constraints instead of prescriptive cues. I was reading the play two steps earlier. Four weeks later, that's my new baseline."
-          </blockquote>
-          <div class="testimonial-meta">
-            <div class="testimonial-avatar" aria-hidden="true">—</div>
-            <div>
-              <div class="testimonial-name">NCAA Track Athlete</div>
-              <div class="testimonial-title">Division I (Anonymous)</div>
-            </div>
+        <div class="module-item">
+          <span class="module-num">04</span>
+          <div>
+            <div class="module-title">Designing for Transfer</div>
+            <p class="module-desc">By Module 4, you'll design differently. What makes a practice environment representative? Why do athletes fall apart in competition? Simpler and more actionable than you think.</p>
           </div>
         </div>
-
-        <div class="testimonials-grid" role="list">
-          <article class="testimonial-card reveal reveal-delay-1" role="listitem">
-            <blockquote>
-              "Six weeks after Module 2, my athletes were reading the game differently — fewer cues from me, more autonomous responses from them. I stopped prescribing and started designing environments."
-            </blockquote>
-            <div class="testimonial-meta">
-              <div class="testimonial-avatar" aria-hidden="true">FF</div>
-              <div>
-                <div class="testimonial-name">Francesco Fonte</div>
-                <div class="testimonial-title">Performance Coach</div>
-              </div>
-            </div>
-          </article>
-
-          <article class="testimonial-card reveal reveal-delay-2" role="listitem">
-            <blockquote>
-              "Three weeks in, I stopped forcing outcomes and started designing conditions. First month: signed two new partnerships without 'closing' either. The environment was right."
-            </blockquote>
-            <div class="testimonial-meta">
-              <div class="testimonial-avatar" aria-hidden="true">JP</div>
-              <div>
-                <div class="testimonial-name">Jay Pages</div>
-                <div class="testimonial-title">Entrepreneur &amp; Athlete</div>
-              </div>
-            </div>
-          </article>
-
-          <article class="testimonial-card reveal reveal-delay-3" role="listitem">
-            <blockquote>
-              "My students felt the difference in their first session. 15 years of coaching — this framework collapsed everything I thought I knew into something that actually works."
-            </blockquote>
-            <div class="testimonial-meta">
-              <div class="testimonial-avatar" aria-hidden="true">—</div>
-              <div>
-                <div class="testimonial-name">Head Coach</div>
-                <div class="testimonial-title">BJJ Academy (Anonymous)</div>
-              </div>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── The Moat ───────────────────────────────────────────────────── -->
-    <section class="section-moat" id="moat" aria-labelledby="moat-heading">
-      <div class="container">
-        <div class="moat-grid">
-          <div class="moat-left reveal">
-            <span class="section-label">About Sam</span>
-            <h2 id="moat-heading">Every other ecological dynamics teacher came from the lab.</h2>
-            <p>Sam came from the field and won twice before he had a name for any of it. 2× NCAA National Champion discus thrower. 6× All-American. Then 5 years studying the science that explained why it worked.</p>
-
-            <div class="moat-pullquote">
-              <p>"Gibson, Bernstein, Davids. Not in a lab. Applied to everything — from elite throwing to business decision-making to how you coach a BJJ class. The framework travels because skill is always an ecological problem."</p>
-            </div>
-
-            <p>That's what makes Foundations different from a textbook course. The science is there because it explains what practitioners have already felt. You won't memorize research papers. You'll finally have a name for what you've always known was broken.</p>
-          </div>
-
-          <div class="credentials-stack reveal reveal-delay-2">
-            <div class="credential-item">
-              <div class="credential-icon" aria-hidden="true">2×</div>
-              <div class="credential-text">
-                <strong>NCAA National Champion</strong>
-                <span>Discus throw — highest level of collegiate competition</span>
-              </div>
-            </div>
-            <div class="credential-item">
-              <div class="credential-icon" aria-hidden="true">6×</div>
-              <div class="credential-text">
-                <strong>All-American Honors</strong>
-                <span>5 years of elite performance in a perception-action sport</span>
-              </div>
-            </div>
-            <div class="credential-item">
-              <div class="credential-icon" aria-hidden="true">5yr</div>
-              <div class="credential-text">
-                <strong>Deep Study: Gibson, Bernstein, Davids</strong>
-                <span>The scientists most coaches have never read</span>
-              </div>
-            </div>
-            <div class="credential-item">
-              <div class="credential-icon" aria-hidden="true">SN</div>
-              <div class="credential-text">
-                <strong>Signal/Noise Newsletter</strong>
-                <span>Weekly translation of the science for practitioners</span>
-              </div>
-            </div>
-            <div class="credential-item">
-              <div class="credential-icon" aria-hidden="true">500</div>
-              <div class="credential-text">
-                <strong>500+ Students</strong>
-                <span>Coaches, athletes, and creators across Attune</span>
-              </div>
-            </div>
+        <div class="module-item">
+          <span class="module-num">05–07</span>
+          <div>
+            <div class="module-title">Applying the Framework Across Domains</div>
+            <p class="module-desc">From invasion sports to individual performance, from athletics to business. Ecological dynamics isn't a sports model. It's a perception-action model. It applies everywhere.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ── Signal/Noise ──────────────────────────────────────────────── -->
-    <section class="section-newsletter" id="newsletter" aria-labelledby="newsletter-heading">
-      <div class="container">
-        <div class="newsletter-grid">
-          <div class="newsletter-left reveal">
-            <span class="section-label">Signal/Noise</span>
-            <h2 id="newsletter-heading">The weekly edge on ecological dynamics.</h2>
-            <p>Every week, one insight from the intersection of ecological psychology, skill acquisition, and creator philosophy. Free. Always will be.</p>
-            <form class="newsletter-form" action="https://substack.com/profile/signup" method="GET" target="_blank" aria-label="Newsletter signup">
-              <input type="email" name="email" class="newsletter-input" placeholder="your@email.com" aria-label="Email address" />
-              <button type="submit" class="btn btn-primary">Subscribe</button>
-            </form>
-          </div>
-
-          <div class="issue-cards reveal reveal-delay-2" aria-label="Recent newsletter issues">
-            <a href="https://signalnoise.substack.com" target="_blank" rel="noopener noreferrer" class="issue-card">
-              <span class="issue-title">The Environment Was Always the Teacher</span>
-              <span class="issue-meta">Recent Issue</span>
-            </a>
-            <a href="https://signalnoise.substack.com" target="_blank" rel="noopener noreferrer" class="issue-card">
-              <span class="issue-title">Repetition Without Repetition: What Bernstein Actually Meant</span>
-              <span class="issue-meta">Recent Issue</span>
-            </a>
-            <a href="https://signalnoise.substack.com" target="_blank" rel="noopener noreferrer" class="issue-card">
-              <span class="issue-title">Why Affordances Explain Everything Your Coach Got Wrong</span>
-              <span class="issue-meta">Recent Issue</span>
-            </a>
+        <div class="module-item">
+          <span class="module-num">08</span>
+          <div>
+            <div class="module-title">The Practitioner's Toolkit</div>
+            <p class="module-desc">A complete constraint design system you'll use every session for the next year. Paired with the Foundations Workbook — a live constraint design tool, not a PDF.</p>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- ── Who This Is NOT For ──────────────────────────────────────── -->
-    <section class="section-not-for" id="not-for" aria-labelledby="not-for-heading">
-      <div class="container">
-        <div class="section-header reveal">
-          <span class="section-label">Honest Disclaimer</span>
-          <h2 id="not-for-heading">Who this is not for</h2>
-        </div>
-
-        <div class="not-for-grid reveal reveal-delay-1">
-          <div class="not-for-card">
-            <p>Coaches who want a plug-and-play drill library with no framework behind it.</p>
-          </div>
-          <div class="not-for-card">
-            <p>Athletes who want someone to prescribe the exact movement and just want to be told what to do.</p>
-          </div>
-          <div class="not-for-card">
-            <p>Anyone unwilling to question why their current training model isn't producing transfer.</p>
-          </div>
-          <div class="not-for-card">
-            <p>People looking for a quick fix, a secret hack, or something that works without them thinking differently first.</p>
-          </div>
-        </div>
-
-        <div class="for-reframe reveal reveal-delay-2">
-          <h3>This is for the ones who suspect the method is broken.</h3>
-          <p>Coaches, athletes, and creators who've felt the gap between training and performance — and are ready to understand why it exists, and what to do about it.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── The Offer ─────────────────────────────────────────────────── -->
-    <section class="section-offer" id="offer" aria-labelledby="offer-heading">
-      <div class="container">
-        <div class="offer-grid">
-          <div class="offer-stack reveal">
-            <span class="section-label">The Offer</span>
-            <h2 id="offer-heading">The model that makes every training decision finally make sense.</h2>
-
-            <div class="offer-items">
-              <div class="offer-item">
-                <div class="offer-item-left">
-                  <strong>The shift in how you see training environments</strong>
-                  <span>8 modules. Complete in 4 weeks. Module 1 shifts how you see. Module 4 shifts how you design.</span>
-                </div>
-                <span class="offer-item-value">$197</span>
-              </div>
-              <div class="offer-item">
-                <div class="offer-item-left">
-                  <strong>A constraint design tool you'll use every session</strong>
-                  <span>The Foundations Workbook — not a PDF, a live field manual you'll pull out before every practice for the next year.</span>
-                </div>
-                <span class="offer-item-value">$47</span>
-              </div>
-              <div class="offer-item">
-                <div class="offer-item-left">
-                  <strong>The framework as it advances — yours without paying twice</strong>
-                  <span>Every new insight and update as the science evolves. Lifetime access, no additional cost.</span>
-                </div>
-                <span class="offer-item-value">$53</span>
-              </div>
-            </div>
-
-            <div class="offer-total">
-              <strong>Total Value</strong>
-              <span class="offer-total-value">$297</span>
-            </div>
-          </div>
-
-          <div class="offer-cta-box reveal reveal-delay-2">
-            <span class="section-label">Today's Investment</span>
-            <div class="offer-price">
-              <span class="offer-price-main">$197</span>
-              <span class="offer-price-sub">one-time · no subscription</span>
-            </div>
-
-            <ul class="offer-cta-features" role="list">
-              <li>Module 1 shifts how you see. Module 4 shifts how you design.</li>
-              <li>The Foundations Workbook — constraint design tool</li>
-              <li>Lifetime access + all future updates</li>
-              <li>Works for coaches, athletes, and creators</li>
-              <li>If Module 1 doesn't shift how you see your training environment, email me and I'll refund the full $197, same day.</li>
-            </ul>
-
-            <a href="https://attunemastery.com/foundations" class="btn btn-primary btn-arrow magnetic-btn" style="font-size:15px;padding:16px 32px;">
-              Begin Foundations
-            </a>
-
-            <p class="offer-fine">One-time payment. Instant access. No recurring fees.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── Coaching Bridge ──────────────────────────────────────────── -->
-    <section class="section-coaching-bridge" aria-labelledby="coaching-bridge-heading">
-      <div class="container">
-        <div class="coaching-bridge-inner reveal">
-          <div class="coaching-bridge-left">
-            <span class="section-label">Want to go further?</span>
-            <h2 id="coaching-bridge-heading">Some students need the framework applied — not just explained.</h2>
-            <p>Foundations gives you the model. 1-on-1 coaching applies it directly to your specific plateau — your domain, your constraints, your environment. Six weeks. One constraint redesigned at a time.</p>
-          </div>
-          <div class="coaching-bridge-right">
-            <p>Coaching is application-based and limited to a small number of engagements at a time. The application takes 5 minutes.</p>
-            <a href="/coaching" class="btn btn-ghost btn-arrow">Learn about 1-on-1 Coaching</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── FAQ ───────────────────────────────────────────────────────── -->
-    <section class="section-faq" id="faq" aria-labelledby="faq-heading">
-      <div class="container">
-        <div class="section-header reveal">
-          <span class="section-label">FAQ</span>
-          <h2 id="faq-heading">Real questions, honest answers.</h2>
-        </div>
-
-        <div class="faq-list reveal reveal-delay-1" role="list">
-          <div class="faq-item" role="listitem">
-            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-1">
-              <span class="faq-question">Who is this actually for?</span>
-              <span class="faq-icon" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-body" id="faq-1" role="region">
-              <div class="faq-answer">
-                Coaches who suspect the prescriptive model is broken. Athletes who've done everything right and still lose it when it counts. Creators and entrepreneurs who sense that how you build skill in your domain is fundamentally different from what you've been told. If you feel the gap between your practice and your performance — and you're ready to understand why it exists — this is for you.
-              </div>
-            </div>
-          </div>
-
-          <div class="faq-item" role="listitem">
-            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-2">
-              <span class="faq-question">I've tried frameworks before. Why is this different?</span>
-              <span class="faq-icon" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-body" id="faq-2" role="region">
-              <div class="faq-answer">
-                Most frameworks are prescriptive — here's the drill, here's the sequence, here's the protocol. Foundations is explanatory. It gives you the model that makes every protocol make sense. When you understand why skill transfers (or doesn't), you can evaluate any drill, any method, any session design. You stop needing someone to tell you what to do. You understand what to design.
-              </div>
-            </div>
-          </div>
-
-          <div class="faq-item" role="listitem">
-            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-3">
-              <span class="faq-question">Do I need a science background?</span>
-              <span class="faq-icon" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-body" id="faq-3" role="region">
-              <div class="faq-answer">
-                No. Sam teaches from lived experience, not the lab. The science is there because it explains what practitioners have intuitively known — it gives you language for what you've already felt. You won't need to memorize research papers. You'll need to be willing to see your practice environment differently.
-              </div>
-            </div>
-          </div>
-
-          <div class="faq-item" role="listitem">
-            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-4">
-              <span class="faq-question">How long until I see results?</span>
-              <span class="faq-icon" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-body" id="faq-4" role="region">
-              <div class="faq-answer">
-                Module 1 shifts how you see. Module 4 shifts how you design. Most students who go all the way through the curriculum report measurable differences in their athletes (or their own performance) within 4–6 weeks of applying the framework. The shift in perception is faster. The shift in outcomes takes the time it takes — because that's how ecological dynamics works.
-              </div>
-            </div>
-          </div>
-
-          <div class="faq-item" role="listitem">
-            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-5">
-              <span class="faq-question">My athletes won't understand the theory.</span>
-              <span class="faq-icon" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-body" id="faq-5" role="region">
-              <div class="faq-answer">
-                They never need to. You change the environment. They experience better training. That's the whole model. Ecological dynamics isn't something you explain to your athletes — it's something you do to the space they practice in. The theory is for you. The constraints are for them. The results show up in performance.
-              </div>
-            </div>
-          </div>
-
-          <div class="faq-item" role="listitem">
-            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-6">
-              <span class="faq-question">Is $197 worth it?</span>
-              <span class="faq-icon" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-body" id="faq-6" role="region">
-              <div class="faq-answer">
-                One session redesigned using this framework changes what your athletes experience for years. One concept understood at the level Foundations delivers it changes how you coach for the rest of your career. That's the actual value proposition. The $197 is what it costs to access the model. What it's worth depends entirely on what you do with it.
-              </div>
-            </div>
-          </div>
-
-          <div class="faq-item" role="listitem">
-            <button class="faq-trigger" aria-expanded="false" aria-controls="faq-7">
-              <span class="faq-question">What if it doesn't work for me?</span>
-              <span class="faq-icon" aria-hidden="true">+</span>
-            </button>
-            <div class="faq-body" id="faq-7" role="region">
-              <div class="faq-answer">
-                If you go through Module 1 and it doesn't shift how you see your training environment, email me and I'll refund the full $197, same day. No form, no friction. I'm confident enough in what Module 1 does that I'll make that guarantee without hesitation. The only risk is continuing to train in the wrong environment.
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── Final CTA ─────────────────────────────────────────────────── -->
-    <section class="section-final-cta" id="final-cta" aria-labelledby="final-cta-heading">
-      <div class="container">
-        <img src="/logo.png" class="final-cta-logo reveal" alt="Attune" />
-        <h2 class="final-cta-h2 reveal" id="final-cta-heading">
-          The gap between your practice and your performance has a name. Foundations gives you that name — and what to do with it.
-        </h2>
-        <p class="final-cta-sub reveal reveal-delay-1">
-          Stop training the pattern. Train the perception.
-        </p>
-        <div class="final-cta-buttons reveal reveal-delay-2">
-          <a href="#offer" class="btn btn-primary btn-arrow magnetic-btn" style="font-size:15px;padding:16px 32px;">
-            Begin Foundations
-          </a>
-          <a href="https://signalnoise.substack.com" target="_blank" rel="noopener noreferrer" class="btn btn-ghost magnetic-btn">
-            Read Signal/Noise first →
-          </a>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ── Footer ────────────────────────────────────────────────────── -->
-  <footer class="footer" aria-label="Site footer">
-    <div class="container">
-      <div class="footer-inner">
-        <a href="#hero" class="footer-logo" aria-label="Attune home">
-          <img src="/logo.png" class="footer-logo-img" alt="Attune" />
-        </a>
-        <ul class="footer-links" role="list">
-          <li><a href="#shift">Method</a></li>
-          <li><a href="#testimonials">Results</a></li>
-          <li><a href="#moat">About</a></li>
-          <li><a href="https://signalnoise.substack.com" target="_blank" rel="noopener noreferrer">Signal/Noise</a></li>
-          <li><a href="mailto:sam@attunemastery.com">Contact</a></li>
-        </ul>
-        <span class="footer-copy">© 2026 Attune · attunemastery.com</span>
       </div>
     </div>
-  </footer>
 
-  <!-- ── Sticky Mobile CTA ──────────────────────────────────────────── -->
-  <div class="sticky-mobile-cta" id="sticky-cta" aria-label="Get Foundations (sticky CTA)">
-    <a href="#offer" class="btn btn-primary btn-arrow">Get Foundations — $197</a>
-  </div>
+    <hr class="divider" />
 
-  <!-- ─── Scripts ──────────────────────────────────────────────────── -->
+    <!-- About Sam -->
+    <div class="section" data-reveal>
+      <span class="label">About Sam</span>
+      <h2>Every other ecological dynamics teacher came from the lab.</h2>
+
+      <p>Sam came from the field and won twice before he had a name for any of it.</p>
+      <p>2x NCAA National Champion discus thrower. 6x All-American. Then 5 years studying the science that explained why it worked — Gibson, Bernstein, Davids. Not in a lab. Applied to everything: elite throwing, business decision-making, coaching practice design.</p>
+      <p>The science is there because it explains what practitioners have already felt. You won't memorize research papers. You'll finally have a name for what you've always known was broken.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Testimonials -->
+    <div class="section" data-reveal>
+      <span class="label">Results</span>
+
+      <div class="testimonial">
+        <blockquote>
+          "Six weeks after Module 2, my athletes were reading the game differently — fewer cues from me, more autonomous responses from them. I stopped prescribing and started designing environments."
+        </blockquote>
+        <div class="testimonial-meta">
+          <span class="testimonial-name">Francesco Fonte</span> &middot; Performance Coach
+        </div>
+      </div>
+
+      <div class="testimonial" data-reveal>
+        <blockquote>
+          "Three weeks in, I stopped forcing outcomes and started designing conditions. First month: signed two new partnerships without 'closing' either. The environment was right."
+        </blockquote>
+        <div class="testimonial-meta">
+          <span class="testimonial-name">Jay Pages</span> &middot; Entrepreneur &amp; Athlete
+        </div>
+      </div>
+
+      <div class="testimonial" data-reveal>
+        <blockquote>
+          "My students felt the difference in their first session. 15 years of coaching — this framework collapsed everything I thought I knew into something that actually works."
+        </blockquote>
+        <div class="testimonial-meta">
+          <span class="testimonial-name">Head Coach</span> &middot; BJJ Academy (Anonymous)
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- The Offer -->
+    <div class="section" id="offer" data-reveal>
+      <span class="label">Today's Investment</span>
+      <h2>Foundations</h2>
+
+      <div class="price-block">
+        <span class="price-main">$197</span>
+        <span class="price-sub">one-time &middot; no subscription</span>
+      </div>
+
+      <ul class="includes-list">
+        <li>8 modules — complete in 4 weeks</li>
+        <li>The Foundations Workbook (constraint design tool, not a PDF)</li>
+        <li>Lifetime access + all future updates included</li>
+        <li>Works for coaches, athletes, and creators</li>
+      </ul>
+
+      <a href="https://attunemastery.com/foundations" class="btn btn-primary btn-full">Begin Foundations &rarr;</a>
+
+      <p class="guarantee">If Module 1 doesn't shift how you see your training environment, email me and I'll refund the full $197, same day. No questions.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Who this is NOT for -->
+    <div class="section" data-reveal>
+      <span class="label">Honest Disclaimer</span>
+      <h2>Who this is not for</h2>
+
+      <ul class="not-for-list">
+        <li>Coaches who want a plug-and-play drill library with no framework behind it</li>
+        <li>Athletes who want someone to prescribe the exact movement and just be told what to do</li>
+        <li>Anyone unwilling to question why their current model isn't producing transfer</li>
+        <li>People looking for a quick fix, a secret hack, or something that works without thinking differently first</li>
+      </ul>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- FAQ -->
+    <div class="section" data-reveal>
+      <span class="label">Questions</span>
+
+      <p><strong style="color:var(--text);">Do I need a science background?</strong></p>
+      <p>No. Sam teaches from lived experience, not the lab. The science is there because it explains what practitioners have intuitively known. You won't memorize research papers. You'll need to be willing to see your practice environment differently.</p>
+
+      <p style="margin-top:24px;"><strong style="color:var(--text);">How long until I see results?</strong></p>
+      <p>Module 1 shifts how you see. Module 4 shifts how you design. Most students report measurable differences in their athletes within 4–6 weeks of applying the framework. The shift in perception is faster. The shift in outcomes takes the time it takes — because that's how ecological dynamics works.</p>
+
+      <p style="margin-top:24px;"><strong style="color:var(--text);">My athletes won't understand the theory.</strong></p>
+      <p>They never need to. You change the environment. They experience better training. That's the whole model. The theory is for you. The constraints are for them. The results show up in performance.</p>
+
+      <p style="margin-top:24px;"><strong style="color:var(--text);">Is $197 worth it?</strong></p>
+      <p>If this framework changes how you see every session you coach for the rest of your career — and it will, if you apply it — the answer is obvious. If you're not sure, read the Signal/Noise newsletter first. If that doesn't resonate, this won't either.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Coaching Bridge -->
+    <div class="section" data-reveal>
+      <span class="label">Want to go further?</span>
+      <h2>Some students need the framework applied — not just explained.</h2>
+      <p>Foundations gives you the model. 1-on-1 coaching applies it directly to your specific plateau — your domain, your constraints, your environment.</p>
+      <p><a href="/coaching" style="color:var(--text);text-decoration:underline;text-underline-offset:3px;">Learn about 1-on-1 Coaching &rarr;</a></p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p class="footer-questions">Questions? <a href="https://t.me/samelsner">Message me on Telegram</a> or read <a href="https://signalnoise.substack.com" target="_blank" rel="noopener">Signal/Noise</a> first.</p>
+      <p class="footer-meta">Attune &middot; <a href="/">attunemastery.com</a> &middot; No refunds except the one-module guarantee above.</p>
+    </footer>
+
+  </div><!-- /page -->
+
   <script>
   (() => {
     'use strict';
 
-    /* ── Terrain Canvas ─────────────────────────────────────────── */
-    const canvas = document.getElementById('terrain-canvas');
-    const ctx = canvas.getContext('2d');
-    let W, H;
-    const GW = 160, GH = 110;
-    let animT = 0;
-
-    function resizeCanvas() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
-
-    // Multi-octave sine field — organic, flowing terrain
-    function getHeight(nx, ny, t) {
-      return (
-        Math.sin(nx * 3.4 + t * 0.22) * 0.28 +
-        Math.sin(ny * 2.9 - t * 0.17) * 0.24 +
-        Math.sin((nx + ny) * 4.8 + t * 0.11) * 0.20 +
-        Math.sin(nx * 7.2 + ny * 5.1 - t * 0.08) * 0.14 +
-        Math.sin(nx * 1.8 - ny * 6.3 + t * 0.19) * 0.09 +
-        Math.sin(nx * 11 + ny * 4 + t * 0.05) * 0.05
-      );
-    }
-
-    function edgeLerp(a, b, threshold) {
-      const d = b - a;
-      return Math.abs(d) < 0.0001 ? 0.5 : Math.max(0, Math.min(1, (threshold - a) / d));
-    }
-
-    function drawTerrain() {
-      if (!W || !H) return;
-      ctx.clearRect(0, 0, W, H);
-
-      const cellW = W / GW;
-      const cellH = H / GH;
-
-      // Precompute height field
-      const field = [];
-      for (let y = 0; y <= GH; y++) {
-        field[y] = [];
-        for (let x = 0; x <= GW; x++) {
-          field[y][x] = getHeight(x / GW, y / GH, animT);
-        }
-      }
-
-      // ── Grid mesh layer ─────────────────────────────────────────
-      ctx.save();
-      ctx.strokeStyle = 'rgba(255,255,255,0.055)';
-      ctx.lineWidth = 0.5;
-      ctx.beginPath();
-      for (let x = 0; x <= GW; x++) {
-        ctx.moveTo(x * cellW, 0);
-        ctx.lineTo(x * cellW, H);
-      }
-      for (let y = 0; y <= GH; y++) {
-        ctx.moveTo(0, y * cellH);
-        ctx.lineTo(W, y * cellH);
-      }
-      ctx.stroke();
-      ctx.restore();
-
-      // ── Contour lines ───────────────────────────────────────────
-      const NUM_LEVELS = 52;
-      const MIN_VAL = -0.9, MAX_VAL = 0.9;
-
-      for (let lv = 0; lv < NUM_LEVELS; lv++) {
-        const threshold = MIN_VAL + (lv / NUM_LEVELS) * (MAX_VAL - MIN_VAL);
-
-        const isRidge  = lv % 6 === 0;
-        const isMajor  = lv % 3 === 0;
-        const alpha    = isRidge ? 0.52 : isMajor ? 0.20 : 0.07;
-        const lineW    = isRidge ? 1.2  : isMajor ? 0.7  : 0.4;
-
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-        ctx.lineWidth = lineW;
-
-        for (let y = 0; y < GH; y++) {
-          for (let x = 0; x < GW; x++) {
-            const v00 = field[y][x],   v10 = field[y][x+1];
-            const v01 = field[y+1][x], v11 = field[y+1][x+1];
-
-            const ci =
-              (v00 > threshold ? 8 : 0) |
-              (v10 > threshold ? 4 : 0) |
-              (v11 > threshold ? 2 : 0) |
-              (v01 > threshold ? 1 : 0);
-
-            if (ci === 0 || ci === 15) continue;
-
-            const x0 = x * cellW, x1 = (x+1) * cellW;
-            const y0 = y * cellH, y1 = (y+1) * cellH;
-
-            const top    = { x: x0 + edgeLerp(v00, v10, threshold) * cellW, y: y0 };
-            const bottom = { x: x0 + edgeLerp(v01, v11, threshold) * cellW, y: y1 };
-            const left   = { x: x0, y: y0 + edgeLerp(v00, v01, threshold) * cellH };
-            const right  = { x: x1, y: y0 + edgeLerp(v10, v11, threshold) * cellH };
-
-            // Saddle disambiguation via cell centre
-            const centre = (v00 + v10 + v01 + v11) / 4;
-            const above  = centre > threshold;
-
-            const segs = {
-              1:  [[left, bottom]],
-              2:  [[bottom, right]],
-              3:  [[left, right]],
-              4:  [[top, right]],
-              5:  above ? [[top, right], [left, bottom]] : [[top, left], [right, bottom]],
-              6:  [[top, bottom]],
-              7:  [[top, left]],
-              8:  [[top, left]],
-              9:  [[top, bottom]],
-              10: above ? [[top, right], [left, bottom]] : [[top, left], [right, bottom]],
-              11: [[top, right]],
-              12: [[left, right]],
-              13: [[bottom, right]],
-              14: [[left, bottom]],
-            }[ci];
-
-            if (segs) {
-              segs.forEach(([a, b]) => {
-                ctx.moveTo(a.x, a.y);
-                ctx.lineTo(b.x, b.y);
-              });
-            }
-          }
-        }
-        ctx.stroke();
-      }
-
-      animT += 0.005;
-    }
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-
-    (function terrainLoop() {
-      drawTerrain();
-      setTimeout(() => requestAnimationFrame(terrainLoop), 1000 / 30);
-    })();
-
-    /* ── Scroll Progress ────────────────────────────────────────── */
-    const progressBar = document.getElementById('scroll-progress');
-    function updateProgress() {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = total > 0 ? (window.scrollY / total) * 100 : 0;
-      progressBar.style.width = progress + '%';
-    }
-
-    /* ── Nav Scroll ─────────────────────────────────────────────── */
-    const nav = document.getElementById('main-nav');
-    function updateNav() {
-      if (window.scrollY > 80) {
-        nav.classList.add('scrolled');
-      } else {
-        nav.classList.remove('scrolled');
-      }
-    }
-
-    /* ── Section-Aware Nav Highlighting ────────────────────────── */
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = ['shift', 'testimonials', 'moat', 'newsletter'];
-    function updateNavHighlight() {
-      let current = '';
-      sections.forEach(id => {
-        const el = document.getElementById(id);
-        if (el && window.scrollY >= el.offsetTop - 120) {
-          current = id;
-        }
-      });
-      navLinks.forEach(link => {
-        link.classList.toggle('active', link.dataset.section === current);
-      });
-    }
-
-    /* ── Sticky Mobile CTA ──────────────────────────────────────── */
-    const stickyCta = document.getElementById('sticky-cta');
-    function updateStickyCta() {
-      if (window.scrollY > 600) {
-        stickyCta.classList.add('visible');
-      } else {
-        stickyCta.classList.remove('visible');
-      }
-    }
-
-    /* ── Hamburger Menu ─────────────────────────────────────────── */
-    const hamburger = document.getElementById('hamburger');
-    const mobileNav = document.getElementById('mobile-nav');
-    hamburger.addEventListener('click', () => {
-      const open = mobileNav.classList.toggle('open');
-      hamburger.classList.toggle('open', open);
-      hamburger.setAttribute('aria-expanded', String(open));
-    });
-    mobileNav.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        mobileNav.classList.remove('open');
-        hamburger.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-      });
-    });
-
-    /* ── Scroll Reveal (IntersectionObserver) ───────────────────── */
-    const reveals = document.querySelectorAll('.reveal');
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
-    reveals.forEach(el => revealObserver.observe(el));
-
-    /* ── Countup Animation ──────────────────────────────────────── */
-    const countupEls = document.querySelectorAll('[data-countup]');
-    const countupObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const el = entry.target;
-          const target = parseInt(el.dataset.countup, 10);
-          const suffix = el.dataset.suffix || '';
-          const duration = 1200;
-          const start = performance.now();
-
-          function animate(now) {
-            const elapsed = now - start;
-            const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            el.textContent = Math.round(eased * target) + suffix;
-            if (progress < 1) requestAnimationFrame(animate);
-          }
-          requestAnimationFrame(animate);
-          countupObserver.unobserve(el);
-        }
-      });
-    }, { threshold: 0.5 });
-    countupEls.forEach(el => countupObserver.observe(el));
-
-    /* ── Hero H1 Word-by-Word Reveal ────────────────────────────── */
-    const h1Words = document.querySelectorAll('.hero h1 .word');
-    h1Words.forEach((word, i) => {
-      setTimeout(() => {
-        word.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        word.style.transform = 'translateY(0)';
-        word.style.opacity = '1';
-      }, 300 + i * 60);
-    });
-    h1Words.forEach(w => { w.style.transform = 'translateY(8px)'; });
-
-    /* ── Hero Word Cycling ──────────────────────────────────────── */
-    const cyclingWords = ['perception.', 'decision.', 'transfer.', 'coupling.', 'emergence.'];
-    let cycleIndex = 0;
-    const cyclingWordEl = document.getElementById('cycling-word');
-
-    function cycleWord() {
-      cyclingWordEl.classList.add('fading');
-      setTimeout(() => {
-        cycleIndex = (cycleIndex + 1) % cyclingWords.length;
-        cyclingWordEl.textContent = cyclingWords[cycleIndex];
-        cyclingWordEl.classList.remove('fading');
-      }, 350);
-    }
-
-    setInterval(cycleWord, 2500);
-
-    /* ── FAQ Accordion ──────────────────────────────────────────── */
-    document.querySelectorAll('.faq-trigger').forEach(trigger => {
-      trigger.addEventListener('click', () => {
-        const expanded = trigger.getAttribute('aria-expanded') === 'true';
-        const bodyId = trigger.getAttribute('aria-controls');
-        const body = document.getElementById(bodyId);
-        const icon = trigger.querySelector('.faq-icon');
-
-        // Close all others
-        document.querySelectorAll('.faq-trigger').forEach(t => {
-          t.setAttribute('aria-expanded', 'false');
-          t.querySelector('.faq-icon').textContent = '+';
-        });
-        document.querySelectorAll('.faq-body').forEach(b => b.classList.remove('open'));
-
-        if (!expanded) {
-          trigger.setAttribute('aria-expanded', 'true');
-          body.classList.add('open');
-          icon.textContent = '×';
-        }
-      });
-    });
-
-
-    /* ── Magnetic Buttons ───────────────────────────────────────── */
-    const magneticBtns = document.querySelectorAll('.magnetic-btn');
-    magneticBtns.forEach(btn => {
-      btn.addEventListener('mousemove', e => {
-        const rect = btn.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const dx = (e.clientX - cx) / (rect.width / 2);
-        const dy = (e.clientY - cy) / (rect.height / 2);
-        btn.style.transform = `translate(${dx * 6}px, ${dy * 6}px)`;
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = 'translate(0,0)';
-      });
-    });
-
-    /* ── Scroll Event Aggregator ────────────────────────────────── */
-    let ticking = false;
+    /* ── Scroll Progress ── */
+    const bar = document.getElementById('scroll-progress');
     window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          updateProgress();
-          updateNav();
-          updateNavHighlight();
-          updateStickyCta();
-          ticking = false;
-        });
-        ticking = true;
-      }
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
     }, { passive: true });
 
-    updateProgress();
-    updateNav();
+    /* ── Scroll Reveal ── */
+    const els = document.querySelectorAll('[data-reveal]');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    els.forEach(el => obs.observe(el));
+
   })();
   </script>
 </body>

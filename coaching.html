@@ -15,40 +15,32 @@
     :root {
       --bg:           #09090b;
       --surface:      #111113;
-      --surface-2:    #18181b;
       --border:       rgba(255,255,255,0.08);
       --border-hover: rgba(255,255,255,0.16);
       --text:         #fafafa;
-      --text-2:       rgba(250,250,250,0.68); /* raised from .58 — clearer on dark bg */
-      --text-3:       rgba(250,250,250,0.42); /* raised from .32 — nav/footer legible */
+      --text-2:       rgba(250,250,250,0.72);
+      --text-3:       rgba(250,250,250,0.42);
       --crimson:      #e11d48;
       --crimson-b:    #f43f5e;
-      --crimson-glow: rgba(225,29,72,0.18);
 
       --font-display: 'Cormorant Garamond', Georgia, serif;
       --font-body:    'Inter', system-ui, sans-serif;
-
-      /* Fluid spacing scale */
-      --gap-section: clamp(56px, 9vw, 88px);
-      --gap-hero:    clamp(64px, 10vw, 96px);
-      --gap-nav:     clamp(48px, 8vw, 80px);
     }
 
     html { background: var(--bg); }
 
     body {
-      background: transparent;
+      background: var(--bg);
       color: var(--text);
       font-family: var(--font-body);
-      font-size: 16px;        /* 16px is the WCAG-recommended minimum for body */
-      line-height: 1.8;
+      font-size: 16px;
+      line-height: 1.85;
       font-weight: 300;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
     }
 
-    /* ── Infrastructure ────────────────────────────────────────── */
+    /* ── Scroll Progress ─────────────────────────────────────────── */
     #scroll-progress {
       position: fixed; top: 0; left: 0;
       height: 2px; width: 0%;
@@ -57,30 +49,18 @@
       transition: width 0.1s linear;
     }
 
-    #terrain-canvas {
-      position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0; pointer-events: none;
-    }
-
-    #ambient-orb { display: none; }
-
-    .vignette {
-      position: fixed; inset: 0;
-      background: radial-gradient(ellipse at center, transparent 35%, rgba(9,9,11,0.78) 100%);
-      pointer-events: none; z-index: 1;
-    }
-
-    /* ── Layout ─────────────────────────────────────────────────── */
+    /* ── Page Layout ─────────────────────────────────────────────── */
     .page {
-      max-width: 620px;
+      max-width: 660px;
       margin: 0 auto;
-      padding: clamp(36px, 7vw, 52px) clamp(20px, 6vw, 32px) 120px;
-      position: relative; z-index: 2;
+      padding: clamp(36px, 7vw, 52px) clamp(20px, 6vw, 40px) 120px;
     }
 
     /* ── Nav ─────────────────────────────────────────────────────── */
-    .nav { margin-bottom: var(--gap-nav); }
+    .nav {
+      margin-bottom: clamp(56px, 9vw, 96px);
+    }
+
     .nav a {
       font-size: 12px;
       letter-spacing: 0.1em;
@@ -88,42 +68,55 @@
       color: var(--text-3);
       text-decoration: none;
       transition: color 0.2s;
-      /* Ensure tap target is large enough on touch devices */
       display: inline-block;
       padding: 8px 0;
     }
+
     .nav a:hover { color: var(--text-2); }
 
     /* ── Hero ────────────────────────────────────────────────────── */
-    .hero { margin-bottom: var(--gap-hero); }
+    .hero {
+      margin-bottom: clamp(64px, 10vw, 96px);
+    }
+
+    .hero-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 24px;
+    }
 
     h1 {
       font-family: var(--font-display);
       font-style: italic;
-      /* clamp: min 42px (phones), fluid, max 80px (desktop) */
-      font-size: clamp(42px, 10vw, 80px);
       font-weight: 300;
-      line-height: 1.08;
-      letter-spacing: -0.01em;
+      font-size: clamp(48px, 9vw, 80px);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
       color: var(--text);
-      margin-bottom: clamp(16px, 3vw, 24px);
+      margin-bottom: clamp(16px, 2.5vw, 22px);
     }
 
     .hero-sub {
       font-family: var(--font-display);
       font-style: italic;
-      /* clamp: min 18px so it never gets too small on narrow screens */
-      font-size: clamp(18px, 3.5vw, 21px);
+      font-size: clamp(18px, 3vw, 22px);
       font-weight: 300;
       color: var(--text-2);
       line-height: 1.55;
-      max-width: 480px;
+      max-width: 520px;
     }
 
-    /* ── Section labels ──────────────────────────────────────────── */
+    /* ── Body Copy ───────────────────────────────────────────────── */
+    .section {
+      margin-bottom: clamp(52px, 8vw, 80px);
+    }
+
     .label {
       display: block;
-      font-family: var(--font-body);
       font-size: 10px;
       font-weight: 500;
       letter-spacing: 0.2em;
@@ -132,14 +125,11 @@
       margin-bottom: 20px;
     }
 
-    /* ── Body copy ───────────────────────────────────────────────── */
-    .section { margin-bottom: var(--gap-section); }
-
     p {
       color: var(--text-2);
-      margin-bottom: 20px;
       font-size: 16px;
-      line-height: 1.8;
+      line-height: 1.85;
+      margin-bottom: 18px;
     }
     p:last-child { margin-bottom: 0; }
 
@@ -147,58 +137,40 @@
     .divider {
       border: none;
       border-top: 1px solid var(--border);
-      margin: var(--gap-section) 0;
-    }
-
-    /* ── Lists ───────────────────────────────────────────────────── */
-    ul { padding-left: 18px; margin-bottom: 20px; }
-    ul li {
-      margin-bottom: 10px;
-      font-size: 16px;
-      color: var(--text-2);
-      line-height: 1.75;
-    }
-
-    /* ── Scroll reveal ───────────────────────────────────────────── */
-    [data-reveal] {
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
-    }
-    [data-reveal].visible {
-      opacity: 1;
-      transform: translateY(0);
+      margin: clamp(48px, 8vw, 72px) 0;
     }
 
     /* ── Packages ────────────────────────────────────────────────── */
-    .packages { display: flex; flex-direction: column; gap: 2px; }
+    .packages {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
 
     .package {
       background: var(--surface);
       border: 1px solid var(--border);
-      padding: clamp(24px, 5vw, 36px) clamp(20px, 4.5vw, 32px);
-      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      padding: clamp(24px, 4.5vw, 36px) clamp(20px, 4vw, 32px);
+      transition: border-color 0.25s;
     }
+
     @media (hover: hover) {
-      /* Only lift on devices that actually have hover (not touch) */
       .package:hover {
         border-color: var(--border-hover);
-        transform: translateY(-3px);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.5);
       }
     }
 
     .package-name {
       font-family: var(--font-display);
       font-style: italic;
-      font-size: clamp(22px, 4vw, 26px);
+      font-size: clamp(22px, 4vw, 28px);
       font-weight: 300;
       color: var(--text);
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
+
     .package-price {
-      font-family: var(--font-body);
       font-size: 11px;
       font-weight: 400;
       letter-spacing: 0.14em;
@@ -212,92 +184,128 @@
       color: var(--text-2);
       font-size: 15px;
       line-height: 1.8;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
-    .package ul { margin-bottom: 24px; }
+
+    .package ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 24px;
+    }
+
     .package ul li {
       font-size: 15px;
       color: var(--text-2);
+      line-height: 1.75;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
     }
+
+    .package ul li:first-child { border-top: 1px solid var(--border); }
 
     /* ── CTA Button ──────────────────────────────────────────────── */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 48px;        /* WCAG touch target minimum */
+      min-height: 48px;
       padding: 13px 28px;
       font-family: var(--font-body);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 500;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-decoration: none;
       background: var(--crimson);
       color: #fff;
       border: 1px solid var(--crimson);
-      transition: background 0.18s, border-color 0.18s, transform 0.18s;
+      transition: background 0.18s, border-color 0.18s, transform 0.15s;
       -webkit-tap-highlight-color: transparent;
     }
+
     .btn:hover {
       background: var(--crimson-b);
       border-color: var(--crimson-b);
       transform: translateY(-1px);
     }
+
     .btn:active { transform: translateY(0); }
 
     /* ── Footer ──────────────────────────────────────────────────── */
     .footer {
-      margin-top: clamp(72px, 10vw, 112px);
-      padding-top: 32px;
+      margin-top: clamp(72px, 10vw, 96px);
+      padding-top: 28px;
       border-top: 1px solid var(--border);
-      font-size: 12px;
-      letter-spacing: 0.04em;
-      color: var(--text-3);
     }
-    .footer a { color: var(--text-3); text-decoration: none; }
-    .footer a:hover { color: var(--text-2); }
 
-    /* ── Mobile overrides ────────────────────────────────────────── */
+    .footer-questions {
+      font-size: 15px;
+      color: var(--text-2);
+      margin-bottom: 20px;
+    }
+
+    .footer-questions a {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .footer-meta {
+      font-size: 12px;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+    }
+
+    .footer-meta a {
+      color: var(--text-3);
+      text-decoration: none;
+    }
+
+    .footer-meta a:hover { color: var(--text-2); }
+
+    /* ── Scroll reveal ───────────────────────────────────────────── */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    [data-reveal].visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Mobile ──────────────────────────────────────────────────── */
     @media (max-width: 480px) {
-      /* Full-width button on phones — larger tap surface */
-      .btn {
-        display: flex;
-        width: 100%;
-      }
-
-      /* Terrain is visually heavy on OLED phones — dial back opacity */
-      #ambient-orb { opacity: 0.3; }
+      .btn { display: flex; width: 100%; }
     }
   </style>
 </head>
 <body>
 
   <div id="scroll-progress" role="progressbar" aria-hidden="true"></div>
-  <div id="ambient-orb" aria-hidden="true"></div>
-  <canvas id="terrain-canvas" aria-hidden="true"></canvas>
-  <div class="vignette" aria-hidden="true"></div>
 
   <div class="page">
 
     <nav class="nav">
-      <a href="/">&#8592; Back</a>
+      <a href="/">&larr; Back</a>
     </nav>
 
     <!-- Hero -->
     <div class="hero">
+      <span class="hero-label">1:1 Coaching &middot; Attune</span>
       <h1>1:1 Coaching</h1>
-      <p class="hero-sub">One conversation to map exactly what&#8217;s producing your plateau &#8212; and what has to change.</p>
+      <p class="hero-sub">One conversation to map exactly what's producing your plateau — and what has to change.</p>
     </div>
 
     <!-- What is this -->
     <div class="section" data-reveal>
       <span class="label">What is this</span>
       <p>This is my only private coaching container available.</p>
-      <p>I work with coaches, athletes, creators, and entrepreneurs who are having some success &#8212; but something is still off. They aren&#8217;t breaking through to the new heights they want to, and they don&#8217;t feel entirely fulfilled in their work or performance.</p>
+      <p>I work with coaches, athletes, creators, and entrepreneurs who are having some success — but something is still off. They aren't breaking through to the new heights they want to, and they don't feel entirely fulfilled in their work or performance.</p>
       <p>They are tired of cycles of unfulfilled potential and want to permanently enter the reality where they are operating at their fullest capacity.</p>
-      <p>My coaching draws from ecological dynamics, skill acquisition science, and perception-action theory &#8212; applied directly to your domain and your specific constraints.</p>
-      <p>The work is diagnostic, not prescriptive. I believe there are no cookie-cutter solutions to performance plateaus. Each problem is unique, and each requires a precise environmental redesign to transcend.</p>
+      <p>My coaching draws from ecological dynamics, skill acquisition science, and perception-action theory — applied directly to your domain and your specific constraints.</p>
+      <p>The work is diagnostic, not prescriptive. There are no cookie-cutter solutions to performance plateaus. Each problem is unique, and each requires a precise environmental redesign to transcend.</p>
     </div>
 
     <hr class="divider" />
@@ -306,8 +314,8 @@
     <div class="section" data-reveal>
       <span class="label">How it works</span>
       <p>We begin with a 75-minute Environmental Audit to clarify your goals, map your current constraints, and diagnose exactly what is producing your plateau.</p>
-      <p>From there, we check in via voice note or text every day. A fully transparent 3&#8211;5 minute check-in from you each day. This is the constraint.</p>
-      <p>It serves as an ongoing diagnostic loop &#8212; allowing us to iterate and realign faster than any once-a-week program. The constraint gets adjusted in real time, not a week later when the moment has passed.</p>
+      <p>From there, we check in via voice note or text every day. A fully transparent 3–5 minute check-in from you each day. This is the constraint.</p>
+      <p>It serves as an ongoing diagnostic loop — allowing us to iterate and realign faster than any once-a-week program. The constraint gets adjusted in real time, not a week later when the moment has passed.</p>
       <p>Throughout our time together, I will also send you relevant frameworks and constraint designs specific to your domain to accelerate your progress.</p>
       <p>You will receive access to the full Foundations course and workbook for the duration of your engagement.</p>
     </div>
@@ -317,8 +325,8 @@
     <!-- Who this is for -->
     <div class="section" data-reveal>
       <span class="label">Who this is for</span>
-      <p>Coaches, athletes, and creators who are having some success &#8212; but something is still off. They aren&#8217;t breaking through to the new heights they want to. They have read the books, done the programs, tried everything they&#8217;ve been told to try &#8212; and still can&#8217;t bridge the gap between what they know and what they&#8217;re producing.</p>
-      <p>If you need someone to prescribe a protocol and tell you exactly what to do each week, this is not the right fit. If you are ready to diagnose the specific environment producing your current results and change it &#8212; this is exactly this.</p>
+      <p>Coaches, athletes, and creators who are having some success — but something is still off. They aren't breaking through to the new heights they want to. They have read the books, done the programs, tried everything they've been told to try — and still can't bridge the gap between what they know and what they're producing.</p>
+      <p>If you need someone to prescribe a protocol and tell you exactly what to do each week, this is not the right fit. If you are ready to diagnose the specific environment producing your current results and change it — this is exactly this.</p>
     </div>
 
     <hr class="divider" />
@@ -331,7 +339,7 @@
         <div class="package">
           <span class="package-name">Activation</span>
           <span class="package-price">$500 &middot; Single Session</span>
-          <p>One 75-minute Environmental Audit. A full diagnostic of the constraints producing your current plateau. You leave knowing precisely what&#8217;s creating the gap and what to change. No commitment beyond the session.</p>
+          <p>One 75-minute Environmental Audit. A full diagnostic of the constraints producing your current plateau. You leave knowing precisely what's creating the gap and what to change. No commitment beyond the session.</p>
           <a href="https://t.me/samelsner" class="btn">Begin the Conversation</a>
         </div>
 
@@ -352,7 +360,8 @@
     </div>
 
     <footer class="footer">
-      <p>Attune &middot; <a href="/">attunemastery.com</a> &middot; <a href="https://signalnoise.substack.com" target="_blank" rel="noopener">Signal/Noise</a></p>
+      <p class="footer-questions">Questions? <a href="https://t.me/samelsner">Message me directly on Telegram</a>.</p>
+      <p class="footer-meta">Attune &middot; <a href="/">attunemastery.com</a> &middot; <a href="https://signalnoise.substack.com" target="_blank" rel="noopener">Signal/Noise</a> &middot; No refunds. All sales final.</p>
     </footer>
 
   </div>
@@ -361,118 +370,24 @@
   (() => {
     'use strict';
 
-    /* ── Terrain Canvas ── */
-    const canvas = document.getElementById('terrain-canvas');
-    const ctx = canvas.getContext('2d');
-    let W, H;
-    /* Halve grid resolution on mobile — same visual, lighter CPU load */
-    const isMobile = window.innerWidth < 600;
-    let GW = isMobile ? 80 : 160;
-    let GH = isMobile ? 55 : 110;
-    let animT = 0;
-
-    function resizeCanvas() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-      /* Recalculate grid resolution on orientation change */
-      const mobile = W < 600;
-      GW = mobile ? 80 : 160;
-      GH = mobile ? 55 : 110;
-    }
-
-    function getHeight(nx, ny, t) {
-      return (
-        Math.sin(nx * 3.4 + t * 0.22) * 0.28 +
-        Math.sin(ny * 2.9 - t * 0.17) * 0.24 +
-        Math.sin((nx + ny) * 4.8 + t * 0.11) * 0.20 +
-        Math.sin(nx * 7.2 + ny * 5.1 - t * 0.08) * 0.14 +
-        Math.sin(nx * 1.8 - ny * 6.3 + t * 0.19) * 0.09 +
-        Math.sin(nx * 11 + ny * 4 + t * 0.05) * 0.05
-      );
-    }
-
-    function edgeLerp(a, b, threshold) {
-      const d = b - a;
-      return Math.abs(d) < 0.0001 ? 0.5 : Math.max(0, Math.min(1, (threshold - a) / d));
-    }
-
-    function drawTerrain() {
-      if (!W || !H) return;
-      ctx.clearRect(0, 0, W, H);
-      const cellW = W / GW, cellH = H / GH;
-      const field = [];
-      for (let y = 0; y <= GH; y++) {
-        field[y] = [];
-        for (let x = 0; x <= GW; x++) field[y][x] = getHeight(x / GW, y / GH, animT);
-      }
-      // Grid mesh
-      ctx.save();
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-      ctx.lineWidth = 0.5;
-      ctx.beginPath();
-      for (let x = 0; x <= GW; x++) { ctx.moveTo(x * cellW, 0); ctx.lineTo(x * cellW, H); }
-      for (let y = 0; y <= GH; y++) { ctx.moveTo(0, y * cellH); ctx.lineTo(W, y * cellH); }
-      ctx.stroke(); ctx.restore();
-      // Contours
-      const NUM_LEVELS = 52, MIN_VAL = -0.9, MAX_VAL = 0.9;
-      for (let lv = 0; lv < NUM_LEVELS; lv++) {
-        const threshold = MIN_VAL + (lv / NUM_LEVELS) * (MAX_VAL - MIN_VAL);
-        const isRidge = lv % 6 === 0, isMajor = lv % 3 === 0;
-        const alpha = isRidge ? 0.48 : isMajor ? 0.17 : 0.06;
-        const lineW = isRidge ? 1.1 : isMajor ? 0.65 : 0.35;
-        ctx.beginPath();
-        ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-        ctx.lineWidth = lineW;
-        for (let y = 0; y < GH; y++) {
-          for (let x = 0; x < GW; x++) {
-            const v00 = field[y][x], v10 = field[y][x+1];
-            const v01 = field[y+1][x], v11 = field[y+1][x+1];
-            const ci = (v00 > threshold ? 8 : 0) | (v10 > threshold ? 4 : 0) |
-                       (v11 > threshold ? 2 : 0) | (v01 > threshold ? 1 : 0);
-            if (ci === 0 || ci === 15) continue;
-            const x0 = x * cellW, x1 = (x+1) * cellW;
-            const y0 = y * cellH, y1 = (y+1) * cellH;
-            const top    = { x: x0 + edgeLerp(v00, v10, threshold) * cellW, y: y0 };
-            const bottom = { x: x0 + edgeLerp(v01, v11, threshold) * cellW, y: y1 };
-            const left   = { x: x0, y: y0 + edgeLerp(v00, v01, threshold) * cellH };
-            const right  = { x: x1, y: y0 + edgeLerp(v10, v11, threshold) * cellH };
-            const above  = (v00 + v10 + v01 + v11) / 4 > threshold;
-            const segs = {
-              1:[[left,bottom]],2:[[bottom,right]],3:[[left,right]],4:[[top,right]],
-              5:above?[[top,right],[left,bottom]]:[[top,left],[right,bottom]],
-              6:[[top,bottom]],7:[[top,left]],8:[[top,left]],9:[[top,bottom]],
-              10:above?[[top,right],[left,bottom]]:[[top,left],[right,bottom]],
-              11:[[top,right]],12:[[left,right]],13:[[bottom,right]],14:[[left,bottom]],
-            }[ci];
-            if (segs) segs.forEach(([a, b]) => { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); });
-          }
-        }
-        ctx.stroke();
-      }
-      animT += 0.005;
-    }
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    (function terrainLoop() {
-      drawTerrain();
-      setTimeout(() => requestAnimationFrame(terrainLoop), 1000 / 30);
-    })();
-
     /* ── Scroll Progress ── */
-    const progressBar = document.getElementById('scroll-progress');
+    const bar = document.getElementById('scroll-progress');
     window.addEventListener('scroll', () => {
       const total = document.documentElement.scrollHeight - window.innerHeight;
-      progressBar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
+      bar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
     }, { passive: true });
 
-
     /* ── Scroll Reveal ── */
-    const revealEls = document.querySelectorAll('[data-reveal]');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    revealEls.forEach(el => observer.observe(el));
+    const els = document.querySelectorAll('[data-reveal]');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    els.forEach(el => obs.observe(el));
 
   })();
   </script>
